@@ -1,0 +1,161 @@
+version: '3.8'
+
+services:
+  # Enterprise Console Frontend
+  enterprise-console:
+    build:
+      context: ./enterprise-console
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://api:8000
+      - REACT_APP_WS_URL=ws://api:8000
+    depends_on:
+      - api
+    volumes:
+      - ./enterprise-console:/app
+      - /app/node_modules
+    networks:
+      - aurora-network
+
+  # API Gateway and Backend Services
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://aurora:aurora123@postgres:5432/aurora_os
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=aurora-jwt-secret-key
+      - FIPS_COMPLIANCE=true
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./backend:/app
+      - /app/__pycache__
+    networks:
+      - aurora-network
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=aurora_os
+      - POSTGRES_USER=aurora
+      - POSTGRES_PASSWORD=aurora123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - aurora-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - aurora-network
+
+  # Aurora Intent Engine (AIE) Service
+  aie-engine:
+    build:
+      context: ./core/aie
+      dockerfile: Dockerfile
+    privileged: true  # Required for eBPF
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - API_ENDPOINT=http://api:8000
+    volumes:
+      - /usr/src:/usr/src
+      - /lib/modules:/lib/modules
+      - ./core/aie:/app
+    depends_on:
+      - redis
+      - api
+    networks:
+      - aurora-network
+
+  # Aurora Sense Monitoring Service
+  aurora-sense:
+    build:
+      context: ./core/sense
+      dockerfile: Dockerfile
+    privileged: true  # Required for kernel observability
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - METRICS_ENDPOINT=http://api:8000/metrics
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - ./core/sense:/app
+    depends_on:
+      - redis
+      - api
+    networks:
+      - aurora-network
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - enterprise-console
+      - api
+    networks:
+      - aurora-network
+
+  # Grafana Monitoring Dashboard
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=aurora123
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    networks:
+      - aurora-network
+
+  # Prometheus Metrics Collection
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - aurora-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  grafana_data:
+  prometheus_data:
+
+networks:
+  aurora-network:
+    driver: bridge

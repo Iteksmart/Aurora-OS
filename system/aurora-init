@@ -1,0 +1,462 @@
+#!/bin/bash
+
+# Aurora-OS Init System
+# Next-generation system initialization with AI-enhanced automation
+
+# Aurora-OS Init Version
+AURORA_INIT_VERSION="1.0.0"
+
+# System paths
+AURORA_SYS="/usr/lib/aurora"
+AURORA_VAR="/var/lib/aurora"
+AURORA_LOG="/var/log/aurora"
+AURORA_RUN="/run/aurora"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+NC='\033[0m' # No Color
+
+# System state
+AURORA_MODE="${AURORA_MODE:-enterprise}"
+AURORA_DEBUG="${AURORA_DEBUG:-false}"
+AURORA_FIPS="${AURORA_FIPS:-false}"
+AURORA_AUTONOMOUS="${AURORA_AUTONOMOUS:-false}"
+
+# Logging function
+aurora_log() {
+    local level="$1"
+    shift
+    local message="$*"
+    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    
+    echo "[$timestamp] [$level] Aurora-OS: $message" | tee -a "$AURORA_LOG/init.log"
+    
+    # Color output for console
+    case "$level" in
+        "INFO")  echo -e "${GREEN}[INFO]${NC} $message" ;;
+        "WARN")  echo -e "${YELLOW}[WARN]${NC} $message" ;;
+        "ERROR") echo -e "${RED}[ERROR]${NC} $message" ;;
+        "DEBUG") 
+            if [[ "$AURORA_DEBUG" == "true" ]]; then
+                echo -e "${PURPLE}[DEBUG]${NC} $message"
+            fi
+            ;;
+        "AIE")   echo -e "${BLUE}[AIE]${NC} $message" ;;
+    esac
+}
+
+# Check if running as PID 1
+if [[ $$ -ne 1 ]]; then
+    aurora_log "ERROR" "Aurora init must be run as PID 1"
+    exit 1
+fi
+
+# Mount essential filesystems
+mount_essential() {
+    aurora_log "INFO" "Mounting essential filesystems"
+    
+    # Mount proc
+    mount -t proc proc /proc || aurora_log "ERROR" "Failed to mount /proc"
+    
+    # Mount sysfs
+    mount -t sysfs sysfs /sys || aurora_log "ERROR" "Failed to mount /sys"
+    
+    # Mount devtmpfs
+    mount -t devtmpfs devtmpfs /dev || aurora_log "ERROR" "Failed to mount /dev"
+    
+    # Mount run
+    mkdir -p /run
+    mount -t tmpfs tmpfs /run -o mode=755,size=10% || aurora_log "ERROR" "Failed to mount /run"
+    
+    # Create essential device nodes
+    mkdir -p /dev/pts /dev/shm
+    mount -t devpts devpts /dev/pts || aurora_log "WARN" "Failed to mount /dev/pts"
+    mount -t tmpfs shmfs /dev/shm || aurora_log "WARN" "Failed to mount /dev/shm"
+    
+    # Essential symlinks
+    ln -sf /proc/self/fd /dev/fd
+    ln -sf /proc/self/fd/0 /dev/stdin
+    ln -sf /proc/self/fd/1 /dev/stdout
+    ln -sf /proc/self/fd/2 /dev/stderr
+    
+    aurora_log "INFO" "Essential filesystems mounted"
+}
+
+# Aurora-OS specific directories
+setup_aurora_dirs() {
+    aurora_log "INFO" "Setting up Aurora-OS directories"
+    
+    mkdir -p "$AURORA_SYS" "$AURORA_VAR" "$AURORA_LOG" "$AURORA_RUN"
+    mkdir -p "$AURORA_VAR"/{aie,sense,flow,desktop,runtime}
+    mkdir -p "$AURORA_VAR"/{automations,security,metrics,profiles}
+    mkdir -p "$AURORA_LOG"/{aie,sense,flow,desktop,runtime}
+    mkdir -p "$AURORA_RUN"/{aie,sense,flow,desktop,runtime}
+    
+    # Set permissions
+    chmod 755 "$AURORA_SYS" "$AURORA_VAR" "$AURORA_LOG" "$AURORA_RUN"
+    
+    aurora_log "INFO" "Aurora-OS directories created"
+}
+
+# Load Aurora kernel modules
+load_aurora_modules() {
+    aurora_log "INFO" "Loading Aurora-OS kernel modules"
+    
+    # Load Aurora Intent Engine
+    if modprobe aurora_aie 2>/dev/null; then
+        aurora_log "AIE" "Aurora Intent Engine loaded successfully"
+        echo "AIE_LOADED=1" > "$AURORA_RUN/aie.status"
+    else
+        aurora_log "WARN" "Failed to load Aurora Intent Engine"
+        echo "AIE_LOADED=0" > "$AURORA_RUN/aie.status"
+    fi
+    
+    # Load Aurora Sense
+    if modprobe aurora_sense 2>/dev/null; then
+        aurora_log "INFO" "Aurora Sense loaded successfully"
+        echo "SENSE_LOADED=1" > "$AURORA_RUN/sense.status"
+    else
+        aurora_log "WARN" "Failed to load Aurora Sense"
+        echo "SENSE_LOADED=0" > "$AURORA_RUN/sense.status"
+    fi
+    
+    # Load Aurora Flow (compositor)
+    if modprobe aurora_flow 2>/dev/null; then
+        aurora_log "INFO" "Aurora Flow compositor loaded successfully"
+        echo "FLOW_LOADED=1" > "$AURORA_RUN/flow.status"
+    else
+        aurora_log "WARN" "Failed to load Aurora Flow compositor"
+        echo "FLOW_LOADED=0" > "$AURORA_RUN/flow.status"
+    fi
+    
+    # Load Aurora Desktop Environment
+    if modprobe aurora_desktop 2>/dev/null; then
+        aurora_log "INFO" "Aurora Desktop Environment loaded successfully"
+        echo "DESKTOP_LOADED=1" > "$AURORA_RUN/desktop.status"
+    else
+        aurora_log "WARN" "Failed to load Aurora Desktop Environment"
+        echo "DESKTOP_LOADED=0" > "$AURORA_RUN/desktop.status"
+    fi
+    
+    # Load Universal App Runtime
+    if modprobe aurora_runtime 2>/dev/null; then
+        aurora_log "INFO" "Universal App Runtime loaded successfully"
+        echo "RUNTIME_LOADED=1" > "$AURORA_RUN/runtime.status"
+    else
+        aurora_log "WARN" "Failed to load Universal App Runtime"
+        echo "RUNTIME_LOADED=0" > "$AURORA_RUN/runtime.status"
+    fi
+    
+    aurora_log "INFO" "Aurora kernel modules loading completed"
+}
+
+# Configure Aurora AIE (Intent Engine)
+configure_aie() {
+    if [[ ! -f "$AURORA_RUN/aie.status" ]] || [[ "$(cat "$AURORA_RUN/aie.status")" != "1" ]]; then
+        aurora_log "WARN" "Aurora Intent Engine not available"
+        return 1
+    fi
+    
+    aurora_log "AIE" "Configuring Aurora Intent Engine"
+    
+    # Configure AI response target
+    echo 100 > /sys/module/aurora_aie/parameters/ai_response_target_ms
+    
+    # Enable enterprise mode
+    if [[ "$AURORA_MODE" == "enterprise" ]]; then
+        echo 1 > /sys/module/aurora_aie/parameters/enterprise_mode
+        aurora_log "AIE" "Enterprise mode enabled"
+    fi
+    
+    # Enable FIPS compliance
+    if [[ "$AURORA_FIPS" == "true" ]]; then
+        echo 1 > /sys/module/aurora_aie/parameters/fips_mode
+        aurora_log "AIE" "FIPS compliance enabled"
+    fi
+    
+    # Enable debug mode
+    if [[ "$AURORA_DEBUG" == "true" ]]; then
+        echo 1 > /sys/module/aurora_aie/parameters/debug_mode
+        aurora_log "AIE" "Debug mode enabled"
+    fi
+    
+    # Start AIE services
+    if [[ -x "$AURORA_SYS/aie/aurora-aie-service" ]]; then
+        "$AURORA_SYS/aie/aurora-aie-service" &
+        echo $! > "$AURORA_RUN/aie-service.pid"
+        aurora_log "AIE" "AIE service started (PID: $!)"
+    fi
+    
+    aurora_log "AIE" "Intent Engine configuration completed"
+}
+
+# Configure Aurora Sense (monitoring)
+configure_sense() {
+    if [[ ! -f "$AURORA_RUN/sense.status" ]] || [[ "$(cat "$AURORA_RUN/sense.status")" != "1" ]]; then
+        aurora_log "WARN" "Aurora Sense not available"
+        return 1
+    fi
+    
+    aurora_log "INFO" "Configuring Aurora Sense monitoring"
+    
+    # Configure monitoring interval
+    echo 1000 > /sys/module/aurora_sense/parameters/monitoring_interval_ms
+    
+    # Enable enterprise mode
+    if [[ "$AURORA_MODE" == "enterprise" ]]; then
+        echo 1 > /sys/module/aurora_sense/parameters/enterprise_mode
+        aurora_log "INFO" "Sense enterprise mode enabled"
+    fi
+    
+    # Enable FIPS compliance
+    if [[ "$AURORA_FIPS" == "true" ]]; then
+        echo 1 > /sys/module/aurora_sense/parameters/fips_mode
+        aurora_log "INFO" "Sense FIPS compliance enabled"
+    fi
+    
+    # Start Sense services
+    if [[ -x "$AURORA_SYS/sense/aurora-sense-service" ]]; then
+        "$AURORA_SYS/sense/aurora-sense-service" &
+        echo $! > "$AURORA_RUN/sense-service.pid"
+        aurora_log "INFO" "Sense service started (PID: $!)"
+    fi
+    
+    aurora_log "INFO" "Aurora Sense configuration completed"
+}
+
+# Initialize security framework
+init_security() {
+    aurora_log "INFO" "Initializing Aurora security framework"
+    
+    # Set up security policies
+    if [[ -f "$AURORA_SYS/security/policies.conf" ]]; then
+        aurora_log "INFO" "Loading security policies"
+        source "$AURORA_SYS/security/policies.conf"
+    fi
+    
+    # Configure FIPS mode if required
+    if [[ "$AURORA_FIPS" == "true" ]]; then
+        aurora_log "INFO" "Configuring FIPS 140-2 compliance"
+        echo 1 > /proc/sys/crypto/fips_enabled 2>/dev/null || aurora_log "WARN" "Failed to enable FIPS mode"
+    fi
+    
+    # Initialize security modules
+    if [[ -x "$AURORA_SYS/security/aurora-security-init" ]]; then
+        "$AURORA_SYS/security/aurora-security-init" || aurora_log "ERROR" "Security initialization failed"
+    fi
+    
+    aurora_log "INFO" "Security framework initialized"
+}
+
+# Initialize networking with zero-config
+init_networking() {
+    aurora_log "INFO" "Initializing zero-config networking"
+    
+    # Load network modules
+    modprobe af_packet 2>/dev/null
+    modprobe tun 2>/dev/null
+    modprobe bridge 2>/dev/null
+    
+    # Bring up loopback
+    ip link set lo up || aurora_log "WARN" "Failed to bring up loopback interface"
+    
+    # Auto-detect and configure network interfaces
+    for interface in /sys/class/net/*; do
+        if [[ -d "$interface" ]]; then
+            iface_name=$(basename "$interface")
+            if [[ "$iface_name" != "lo" ]]; then
+                aurora_log "INFO" "Auto-configuring interface: $iface_name"
+                ip link set "$iface_name" up 2>/dev/null
+                
+                # Try DHCP if available
+                if command -v dhcpcd >/dev/null 2>&1; then
+                    dhcpcd "$iface_name" &
+                elif command -v udhcpc >/dev/null 2>&1; then
+                    udhcpc -i "$iface_name" &
+                fi
+            fi
+        fi
+    done
+    
+    # Start Aurora networking services
+    if [[ -x "$AURORA_SYS/network/aurora-network-service" ]]; then
+        "$AURORA_SYS/network/aurora-network-service" &
+        echo $! > "$AURORA_RUN/network-service.pid"
+        aurora_log "INFO" "Aurora network service started"
+    fi
+    
+    aurora_log "INFO" "Zero-config networking initialized"
+}
+
+# Initialize storage systems
+init_storage() {
+    aurora_log "INFO" "Initializing Aurora storage systems"
+    
+    # Check and mount filesystems from /etc/fstab
+    mount -a || aurora_log "WARN" "Some filesystems failed to mount"
+    
+    # Initialize Aurora storage management
+    if [[ -x "$AURORA_SYS/storage/aurora-storage-init" ]]; then
+        "$AURORA_SYS/storage/aurora-storage-init" || aurora_log "WARN" "Storage initialization issues"
+    fi
+    
+    # Clean up temporary directories
+    rm -rf /tmp/* 2>/dev/null
+    chmod 1777 /tmp
+    
+    aurora_log "INFO" "Storage systems initialized"
+}
+
+# Start essential system services
+start_services() {
+    aurora_log "INFO" "Starting Aurora system services"
+    
+    # Start system logger
+    if [[ -x "$AURORA_SYS/logging/aurora-logger" ]]; then
+        "$AURORA_SYS/logging/aurora-logger" &
+        echo $! > "$AURORA_RUN/logger.pid"
+    fi
+    
+    # Start time synchronization
+    if [[ -x "$AURORA_SYS/time/aurora-timesync" ]]; then
+        "$AURORA_SYS/time/aurora-timesync" &
+        echo $! > "$AURORA_RUN/timesync.pid"
+    fi
+    
+    # Start hardware management
+    if [[ -x "$AURORA_SYS/hardware/aurora-hardware-manager" ]]; then
+        "$AURORA_SYS/hardware/aurora-hardware-manager" &
+        echo $! > "$AURORA_RUN/hardware.pid"
+    fi
+    
+    # Start self-healing daemon
+    if [[ -x "$AURORA_SYS/selfheal/aurora-selfheal" ]]; then
+        "$AURORA_SYS/selfheal/aurora-selfheal" &
+        echo $! > "$AURORA_RUN/selfheal.pid"
+        aurora_log "INFO" "Self-healing daemon started"
+    fi
+    
+    # Start autonomous IT mode if enabled
+    if [[ "$AURORA_AUTONOMOUS" == "true" ]]; then
+        if [[ -x "$AURORA_SYS/autonomous/aurora-autonomous" ]]; then
+            "$AURORA_SYS/autonomous/aurora-autonomous" &
+            echo $! > "$AURORA_RUN/autonomous.pid"
+            aurora_log "INFO" "Autonomous IT mode enabled"
+        fi
+    fi
+    
+    aurora_log "INFO" "Essential services started"
+}
+
+# Start desktop environment
+start_desktop() {
+    # Only start desktop if we have display capability
+    if [[ -d /sys/class/drm ]] && ls /sys/class/drm/*/status >/dev/null 2>&1; then
+        aurora_log "INFO" "Starting Aurora Desktop Environment"
+        
+        # Start display manager
+        if [[ -x "$AURORA_SYS/desktop/aurora-display-manager" ]]; then
+            "$AURORA_SYS/desktop/aurora-display-manager" &
+            echo $! > "$AURORA_RUN/display-manager.pid"
+        fi
+        
+        # Start Aurora Flow compositor
+        if [[ -x "$AURORA_SYS/desktop/aurora-flow" ]]; then
+            "$AURORA_SYS/desktop/aurora-flow" &
+            echo $! > "$AURORA_RUN/flow.pid"
+        fi
+        
+        aurora_log "INFO" "Desktop environment started"
+    else
+        aurora_log "INFO" "No display detected - running in headless mode"
+    fi
+}
+
+# Emergency shell fallback
+emergency_shell() {
+    aurora_log "ERROR" "Falling back to emergency shell"
+    echo "Aurora-OS Emergency Shell"
+    echo "System may be in an inconsistent state"
+    echo "Type 'exit' to continue boot or 'reboot' to restart"
+    echo ""
+    
+    # Try to start a shell
+    if [[ -x /bin/bash ]]; then
+        /bin/bash --norc --noprofile
+    elif [[ -x /bin/sh ]]; then
+        /bin/sh
+    else
+        echo "No shell available - system halted"
+        while true; do
+            sleep 60
+        done
+    fi
+}
+
+# Main boot sequence
+main() {
+    aurora_log "INFO" "Aurora-OS v$AURORA_INIT_VERSION initializing (PID: $$)"
+    aurora_log "INFO" "Boot mode: $AURORA_MODE"
+    aurora_log "INFO" "Debug: $AURORA_DEBUG, FIPS: $AURORA_FIPS, Autonomous: $AURORA_AUTONOMOUS"
+    
+    # Set up signal handlers
+    trap 'aurora_log "WARN" "Received signal - rebooting"; reboot' SIGTERM SIGINT
+    trap 'aurora_log "ERROR" "Panic occurred"; emergency_shell' SIGSEGV SIGABRT
+    
+    # Initialize basic system
+    mount_essential || emergency_shell
+    setup_aurora_dirs || emergency_shell
+    
+    # Load Aurora kernel modules
+    load_aurora_modules
+    
+    # Configure Aurora subsystems
+    configure_aie
+    configure_sense
+    
+    # Initialize system components
+    init_security || emergency_shell
+    init_networking
+    init_storage
+    start_services
+    
+    # Start desktop if available
+    start_desktop
+    
+    # Boot complete
+    aurora_log "INFO" "Aurora-OS boot sequence completed successfully"
+    aurora_log "INFO" "System is ready for user interaction"
+    
+    # Update system status
+    echo "READY" > "$AURORA_RUN/system.status"
+    echo "$(date +%s)" > "$AURORA_RUN/boot_time"
+    
+    # Create system ready indicator
+    if [[ -x /usr/bin/systemd-notify ]]; then
+        systemd-notify --ready
+    fi
+    
+    # Main system loop - keep init running
+    while true; do
+        # Check system health
+        if [[ -f "$AURORA_RUN/selfheal.pid" ]]; then
+            # Self-healing is running
+            sleep 30
+        else
+            # Restart self-healing if it died
+            aurora_log "WARN" "Self-healing daemon died, restarting"
+            if [[ -x "$AURORA_SYS/selfheal/aurora-selfheal" ]]; then
+                "$AURORA_SYS/selfheal/aurora-selfheal" &
+                echo $! > "$AURORA_RUN/selfheal.pid"
+            fi
+            sleep 10
+        fi
+    done
+}
+
+# Start the system
+main "$@"
