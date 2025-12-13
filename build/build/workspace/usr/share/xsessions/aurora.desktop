@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=Aurora OS
+Comment=Aurora AI-Native Desktop Environment
+Exec=/opt/aurora/desktop/launch_aurora.sh
+Type=Application

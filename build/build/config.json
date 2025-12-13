@@ -1,0 +1,27 @@
+{
+  "os_name": "Aurora OS",
+  "version": "0.1.0",
+  "arch": "x86_64",
+  "base_distro": "ubuntu",
+  "base_version": "22.04",
+  "kernel_version": "6.x",
+  "packages": [
+    "python3",
+    "python3-pip",
+    "build-essential",
+    "git",
+    "curl",
+    "wget",
+    "grub-pc",
+    "systemd",
+    "xorg",
+    "gnome-session"
+  ],
+  "aurora_components": {
+    "kernel_extensions": true,
+    "ai_control_plane": true,
+    "desktop_shell": true,
+    "system_services": true,
+    "mcp_nervous_system": true
+  }
+}

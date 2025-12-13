@@ -1,0 +1,99 @@
+{
+  "aurora-kernel-extensions": {
+    "name": "aurora-kernel-extensions",
+    "version": "0.1.0",
+    "description": "AI-enhanced kernel extensions for Aurora OS",
+    "package_type": "system",
+    "dependencies": [
+      "linux-headers-generic"
+    ],
+    "conflicts": [],
+    "provides": [
+      "ai-scheduler",
+      "ai-context-manager",
+      "ai-security"
+    ],
+    "size": 84843,
+    "checksum": "",
+    "install_path": "kernel_extensions",
+    "maintainer": "Aurora OS Team"
+  },
+  "aurora-ai-control-plane": {
+    "name": "aurora-ai-control-plane",
+    "version": "0.1.0",
+    "description": "AI control plane for natural language interface",
+    "package_type": "ai_module",
+    "dependencies": [
+      "python3",
+      "python3-pip",
+      "aurora-mcp-nervous-system"
+    ],
+    "conflicts": [],
+    "provides": [
+      "intent-engine",
+      "nlu-core"
+    ],
+    "size": 34553,
+    "checksum": "",
+    "install_path": "ai_control_plane",
+    "maintainer": "Aurora OS Team"
+  },
+  "aurora-desktop-shell": {
+    "name": "aurora-desktop-shell",
+    "version": "0.1.0",
+    "description": "AI-native desktop environment",
+    "package_type": "desktop",
+    "dependencies": [
+      "python3",
+      "xorg",
+      "python3-tk"
+    ],
+    "conflicts": [],
+    "provides": [
+      "aurora-shell",
+      "conversational-palette"
+    ],
+    "size": 194954,
+    "checksum": "",
+    "install_path": "desktop",
+    "maintainer": "Aurora OS Team"
+  },
+  "aurora-system-services": {
+    "name": "aurora-system-services",
+    "version": "0.1.0",
+    "description": "Aurora OS system services and utilities",
+    "package_type": "service",
+    "dependencies": [
+      "python3",
+      "systemd"
+    ],
+    "conflicts": [],
+    "provides": [
+      "file-manager",
+      "service-manager"
+    ],
+    "size": 180951,
+    "checksum": "",
+    "install_path": "services",
+    "maintainer": "Aurora OS Team"
+  },
+  "aurora-mcp-nervous-system": {
+    "name": "aurora-mcp-nervous-system",
+    "version": "0.1.0",
+    "description": "Model Context Protocol nervous system for Aurora OS",
+    "package_type": "ai_module",
+    "dependencies": [
+      "python3",
+      "python3-pip"
+    ],
+    "conflicts": [],
+    "provides": [
+      "mcp-host",
+      "context-providers"
+    ],
+    "size": 432840,
+    "checksum": "",
+    "install_path": "mcp",
+    "maintainer": "Aurora OS Team"
+  }
+}

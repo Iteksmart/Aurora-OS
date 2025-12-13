@@ -1,0 +1,15 @@
+[Unit]
+Description=Aurora OS AI Control Plane
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/aurora/ai_control_plane
+ExecStart=/usr/bin/python3 -m intent_engine
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

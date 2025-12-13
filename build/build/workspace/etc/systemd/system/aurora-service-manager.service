@@ -1,0 +1,15 @@
+[Unit]
+Description=Aurora OS Service Manager
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/aurora/services
+ExecStart=/usr/bin/python3 service_manager.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,4 @@
+[2025-12-13T16:59:38.400427] INFO: Starting Aurora OS build: build_1765645178
+[2025-12-13T16:59:38.400443] INFO: Starting build step: validate
+[2025-12-13T16:59:38.412878] INFO: Step validate completed with status: failed
+[2025-12-13T16:59:38.412889] ERROR: Pipeline failed at step: validate

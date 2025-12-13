@@ -1,0 +1,215 @@
+# Aurora OS License
+
+## GNU General Public License v3.0
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+## Aurora OS Commercial License Addendum
+
+### Purpose
+This addendum provides additional terms for commercial use of Aurora OS
+while maintaining the open-source nature of the core project.
+
+### Commercial Usage Rights
+Commercial organizations may use Aurora OS under the following terms:
+
+1. **Internal Use**: Free for internal business operations
+2. **Product Integration**: License required for embedding in commercial products
+3. **Service Offering**: License required for Aurora OS as a service
+4. ** Redistribution**: Must preserve open-source components and attributions
+
+### Enterprise License
+For enterprise deployments exceeding 1000 users or requiring:
+- Priority support and SLA guarantees
+- Custom integration services
+- Professional training and certification
+- Extended warranty and indemnification
+
+Please contact licensing@aurora-os.org for enterprise licensing details.
+
+### Patent Grant
+Subject to the terms and conditions of this license, each contributor
+hereby grants to you a perpetual, worldwide, non-exclusive, no-charge,
+royalty-free, irrevocable patent license to make, have made, use,
+offer to sell, sell, import, and otherwise transfer the Work.
+
+### Trademark Usage
+"Aurora OS" and related marks are trademarks of the Aurora OS project.
+Commercial use requires explicit permission from the project maintainers.
+
+### Attribution Requirements
+All distributions must include:
+1. Original copyright notices
+2. License text and disclaimer
+3. Notice of modifications if any
+4. Attribution to Aurora OS project
+
+### Warranty Disclaimer
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+### Limitation of Liability
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---
+
+## Additional Aurora OS-Specific Terms
+
+### AI Component Licensing
+AI components (neural networks, models, training data) are subject to
+additional terms:
+
+- **Training Data**: Must comply with data usage agreements
+- **Pre-trained Models**: Commercial use requires separate license
+- **Generated Content**: Users retain rights to AI-generated output
+- **Model Redistribution**: Must preserve licensing information
+
+### Security Components
+Security components include additional warranties and responsibilities:
+
+- **Security Updates**: Commercial users receive priority security updates
+- **Vulnerability Disclosure**: Must follow responsible disclosure policy
+- **Encryption Modules**: Subject to export control regulations
+- **Audit Requirements**: Commercial use may require security audits
+
+### Government Use
+Government agencies have special considerations:
+
+- **Sovereign Deployment**: Full data sovereignty guaranteed
+- **Security Clearances**: Available for classified environments
+- **Compliance Support**: Assistance with regulatory compliance
+- **Custom Integrations**: Support for government-specific requirements
+
+### Community Contributions
+Contributions to Aurora OS are subject to:
+
+- **Developer Agreement**: Contributors must sign DCO (Developer Certificate of Origin)
+- **License Compatibility**: All contributions must be GPLv3 compatible
+- **Patent Clearance**: Contributors must warrant no patent infringement
+- **Code Quality**: Must meet project quality and security standards
+
+### AI Ethics Compliance
+Users of AI components must comply with:
+
+- **Ethical Guidelines**: Follow Aurora OS AI ethics principles
+- **Privacy Protection**: Ensure user data privacy and protection
+- **Bias Mitigation**: Actively work to reduce AI bias
+- **Transparency**: Provide explanations for AI decisions when requested
+
+### Support and Maintenance
+
+#### Community Support
+- Free community support via forums and documentation
+- Bug fixes and security updates for all users
+- Community-driven feature development
+- Best-effort support from maintainers
+
+#### Commercial Support
+- Priority support with guaranteed response times
+- Dedicated support channels and technical account managers
+- Custom integration and consulting services
+- Service Level Agreements (SLAs) with uptime guarantees
+
+### Distribution Rights
+
+#### Permitted Uses
+- Redistribution of original or modified versions
+- Use in proprietary software components (with proper attribution)
+- Integration into commercial products (with commercial license)
+- Creation of derivative works under same license terms
+
+#### Prohibited Uses
+- Removal of copyright notices or license terms
+- Patent infringement or litigation against contributors
+- Use of Aurora OS trademarks without permission
+- Violation of export control or sanctions compliance
+
+### Compliance and Enforcement
+
+#### License Compliance
+Users must maintain compliance with:
+- All terms of GPLv3 license
+- Aurora OS specific addendums
+- Applicable export controls and sanctions
+- Industry-specific regulations (healthcare, finance, etc.)
+
+#### Enforcement
+License enforcement follows:
+1. Friendly notification and correction period
+2. Community mediation when possible
+3. Legal action as last resort
+4. Focus on compliance rather than punishment
+
+### Future License Changes
+
+#### License Evolution
+Aurora OS may evolve to:
+- Later versions of GPL when appropriate
+- Additional open-source licenses for specific components
+- Enhanced commercial licensing options
+- Special purpose licenses for government/education
+
+#### License Migration
+- Users will receive advance notice of license changes
+- Migration paths will be provided
+- Existing distributions retain their original license terms
+- Community feedback will be considered for major changes
+
+---
+
+## Contact Information
+
+### General Inquiries
+- **Website**: https://aurora-os.org
+- **Email**: info@aurora-os.org
+- **Community**: https://community.aurora-os.org
+
+### Licensing
+- **Commercial**: licensing@aurora-os.org
+- **Legal**: legal@aurora-os.org
+- **Enterprise**: enterprise@aurora-os.org
+
+### Security
+- **Security Issues**: security@aurora-os.org
+- **Vulnerability Disclosure**: security@aurora-os.org
+- **Security Team**: security-team@aurora-os.org
+
+### Development
+- **Contributions**: contribute@aurora-os.org
+- **Support**: support@aurora-os.org
+- **Documentation**: docs@aurora-os.org
+
+---
+
+## License Summary
+
+| Use Case | License Type | Cost | Support |
+|----------|--------------|------|---------|
+| Personal/Research | GPLv3 | Free | Community |
+| Small Business (<100 users) | GPLv3 | Free | Community |
+| Medium Business (100-1000 users) | Commercial License | Required | Priority |
+| Large Enterprise (>1000 users) | Enterprise License | Required | Dedicated |
+| Government | Government License | Required | Specialized |
+| Education/Academic | GPLv3 | Free | Community |
+| Open Source Projects | GPLv3 | Free | Community |
+
+This license balances open-source ideals with practical business needs, ensuring Aurora OS can thrive both as a community project and as a commercial platform for transformative AI-native computing.
+
+---
+
+*"Aurora OS: Transforming computing through open innovation and intelligent partnership"*

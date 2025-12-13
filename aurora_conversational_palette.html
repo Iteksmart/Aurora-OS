@@ -1,0 +1,1085 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurora Conversational Palette</title>
+    <style>
+        
+        :root {
+            /* Aurora Modern Colors */
+            --aurora-primary: #2563eb;
+            --aurora-secondary: #7c3aed;
+            --aurora-success: #10b981;
+            --aurora-warning: #f59e0b;
+            --aurora-error: #ef4444;
+            --aurora-dark: #1f2937;
+            --aurora-light: #f3f4f6;
+            
+            /* Gradients */
+            --aurora-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --aurora-glow: radial-gradient(circle, rgba(102, 126, 234, 0.3) 0%, transparent 70%);
+            
+            /* Shadows */
+            --aurora-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --aurora-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --aurora-shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --aurora-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --aurora-shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --aurora-glow-shadow: 0 0 20px rgba(102, 126, 234, 0.6);
+            
+            /* Border Radius */
+            --aurora-radius-sm: 0.25rem;
+            --aurora-radius: 0.5rem;
+            --aurora-radius-md: 0.75rem;
+            --aurora-radius-lg: 1rem;
+            --aurora-radius-xl: 1.5rem;
+            --aurora-radius-full: 9999px;
+            
+            /* Spacing */
+            --aurora-space-1: 0.25rem;
+            --aurora-space-2: 0.5rem;
+            --aurora-space-3: 0.75rem;
+            --aurora-space-4: 1rem;
+            --aurora-space-5: 1.25rem;
+            --aurora-space-6: 1.5rem;
+            --aurora-space-8: 2rem;
+            --aurora-space-10: 2.5rem;
+            --aurora-space-12: 3rem;
+            
+            /* Typography */
+            --aurora-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --aurora-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+            
+            /* Z-index layers */
+            --aurora-z-dropdown: 1000;
+            --aurora-z-sticky: 1020;
+            --aurora-z-fixed: 1030;
+            --aurora-z-modal-backdrop: 1040;
+            --aurora-z-modal: 1050;
+            --aurora-z-popover: 1060;
+            --aurora-z-tooltip: 1070;
+        }
+        
+
+        /* Aurora Animations */
+        @keyframes aurora-fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes aurora-fade-out {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        
+        @keyframes aurora-slide-up {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes aurora-slide-down {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes aurora-slide-left {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes aurora-slide-right {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes aurora-scale-in {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes aurora-scale-out {
+            from { transform: scale(1); opacity: 1; }
+            to { transform: scale(0.9); opacity: 0; }
+        }
+        
+        @keyframes aurora-pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+        
+        @keyframes aurora-bounce {
+            0%, 20%, 53%, 80%, 100% { transform: translateY(0); }
+            40%, 43% { transform: translateY(-30px); }
+            70% { transform: translateY(-15px); }
+            90% { transform: translateY(-4px); }
+        }
+        
+        @keyframes aurora-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.6); }
+            50% { box-shadow: 0 0 40px rgba(102, 126, 234, 0.8); }
+        }
+        
+        @keyframes aurora-typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+        
+        @keyframes aurora-gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes aurora-float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes aurora-rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes aurora-shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        
+
+        /* Aurora Modern Components */
+        
+        /* Button Styles */
+        .aurora-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--aurora-space-3) var(--aurora-space-6);
+            border: none;
+            border-radius: var(--aurora-radius);
+            font-family: var(--aurora-font-sans);
+            font-weight: 500;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .aurora-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .aurora-btn:hover::before {
+            left: 100%;
+        }
+        
+        .aurora-btn-primary {
+            background: var(--aurora-primary);
+            color: white;
+            box-shadow: var(--aurora-shadow);
+        }
+        
+        .aurora-btn-primary:hover {
+            background: #1d4ed8;
+            box-shadow: var(--aurora-shadow-md);
+            transform: translateY(-2px);
+        }
+        
+        .aurora-btn-secondary {
+            background: var(--aurora-secondary);
+            color: white;
+            box-shadow: var(--aurora-shadow);
+        }
+        
+        .aurora-btn-ghost {
+            background: transparent;
+            color: var(--aurora-primary);
+            border: 1px solid var(--aurora-primary);
+        }
+        
+        .aurora-btn-ghost:hover {
+            background: var(--aurora-primary);
+            color: white;
+        }
+        
+        /* Card Styles */
+        .aurora-card {
+            background: white;
+            border-radius: var(--aurora-radius-lg);
+            box-shadow: var(--aurora-shadow);
+            padding: var(--aurora-space-6);
+            transition: all 0.2s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .aurora-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--aurora-gradient);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        
+        .aurora-card:hover::after {
+            transform: scaleX(1);
+        }
+        
+        .aurora-card:hover {
+            box-shadow: var(--aurora-shadow-lg);
+            transform: translateY(-4px);
+        }
+        
+        /* Input Styles */
+        .aurora-input {
+            width: 100%;
+            padding: var(--aurora-space-3) var(--aurora-space-4);
+            border: 2px solid #e5e7eb;
+            border-radius: var(--aurora-radius);
+            font-family: var(--aurora-font-sans);
+            font-size: 0.875rem;
+            transition: all 0.1s ease-out;
+            background: white;
+        }
+        
+        .aurora-input:focus {
+            outline: none;
+            border-color: var(--aurora-primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        /* Modal Styles */
+        .aurora-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: var(--aurora-z-modal);
+            backdrop-filter: blur(4px);
+        }
+        
+        .aurora-modal-content {
+            background: white;
+            border-radius: var(--aurora-radius-xl);
+            box-shadow: var(--aurora-shadow-xl);
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow: auto;
+            animation: aurora-scale-in 0.3s ease-out;
+        }
+        
+        /* Loading Spinner */
+        .aurora-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid var(--aurora-primary);
+            border-radius: 50%;
+            animation: aurora-rotate 1s linear infinite;
+        }
+        
+        /* Typing Indicator */
+        .aurora-typing {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: var(--aurora-space-3);
+        }
+        
+        .aurora-typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--aurora-primary);
+            border-radius: 50%;
+            animation: aurora-typing 1.5s ease-in-out infinite;
+        }
+        
+        .aurora-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .aurora-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        /* Notification Toast */
+        .aurora-toast {
+            position: fixed;
+            bottom: var(--aurora-space-6);
+            right: var(--aurora-space-6);
+            background: white;
+            padding: var(--aurora-space-4) var(--aurora-space-6);
+            border-radius: var(--aurora-radius-lg);
+            box-shadow: var(--aurora-shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--aurora-space-3);
+            z-index: var(--aurora-z-tooltip);
+            animation: aurora-slide-up 0.3s ease-out;
+            max-width: 400px;
+        }
+        
+        .aurora-toast-success { border-left: 4px solid var(--aurora-success); }
+        .aurora-toast-warning { border-left: 4px solid var(--aurora-warning); }
+        .aurora-toast-error { border-left: 4px solid var(--aurora-error); }
+        .aurora-toast-info { border-left: 4px solid var(--aurora-primary); }
+        
+        /* Progress Bar */
+        .aurora-progress {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: var(--aurora-radius-full);
+            overflow: hidden;
+        }
+        
+        .aurora-progress-bar {
+            height: 100%;
+            background: var(--aurora-gradient);
+            border-radius: var(--aurora-radius-full);
+            transition: width 0.3s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .aurora-progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: aurora-shimmer 2s linear infinite;
+        }
+        
+        /* Floating Action Button */
+        .aurora-fab {
+            position: fixed;
+            bottom: var(--aurora-space-6);
+            right: var(--aurora-space-6);
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--aurora-gradient);
+            color: white;
+            border: none;
+            box-shadow: var(--aurora-shadow-lg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease-in-out;
+            z-index: var(--aurora-z-fixed);
+        }
+        
+        .aurora-fab:hover {
+            transform: scale(1.1);
+            box-shadow: var(--aurora-glow-shadow);
+        }
+        
+        /* Aurora Glow Effect */
+        .aurora-glow {
+            position: relative;
+        }
+        
+        .aurora-glow::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: var(--aurora-gradient);
+            border-radius: inherit;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            filter: blur(8px);
+            z-index: -1;
+        }
+        
+        .aurora-glow:hover::before {
+            opacity: 0.7;
+            animation: aurora-glow 2s ease-in-out infinite;
+        }
+        
+
+        .aurora-animate-fade_in {
+            animation: aurora-fade_in 0.3s ease-in-out 0.0s 1;
+        }
+        
+
+        .aurora-animate-fade_out {
+            animation: aurora-fade_out 0.2s ease-in-out 0.0s 1;
+        }
+        
+
+        .aurora-animate-slide_up {
+            animation: aurora-slide_up 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.0s 1;
+        }
+        
+
+        .aurora-animate-slide_down {
+            animation: aurora-slide_down 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.0s 1;
+        }
+        
+
+        .aurora-animate-slide_left {
+            animation: aurora-slide_left 0.3s ease-out 0.0s 1;
+        }
+        
+
+        .aurora-animate-slide_right {
+            animation: aurora-slide_right 0.3s ease-out 0.0s 1;
+        }
+        
+
+        .aurora-animate-scale_in {
+            animation: aurora-scale_in 0.2s ease-out 0.0s 1;
+        }
+        
+
+        .aurora-animate-scale_out {
+            animation: aurora-scale_out 0.2s ease-in 0.0s 1;
+        }
+        
+
+        .aurora-animate-rotate {
+            animation: aurora-rotate 0.5s linear 0.0s 1;
+        }
+        
+
+        .aurora-animate-pulse {
+            animation: aurora-pulse 1.0s ease-in-out 0.0s 2;
+        }
+        
+
+        .aurora-animate-bounce {
+            animation: aurora-bounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.0s 1;
+        }
+        
+
+        .aurora-animate-aurora_glow {
+            animation: aurora-aurora_glow 2.0s ease-in-out 0.0s infinite;
+        }
+        
+
+        .aurora-animate-typing_indicator {
+            animation: aurora-typing_indicator 1.5s ease-in-out 0.0s infinite;
+        }
+        
+        
+        /* Conversational Palette Specific Styles */
+        .aurora-palette {
+            position: fixed;
+            width: 400px;
+            height: 600px;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-radius: var(--aurora-radius-xl);
+            box-shadow: var(--aurora-shadow-xl), 0 0 40px rgba(102, 126, 234, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: var(--aurora-z-modal);
+            font-family: var(--aurora-font-sans);
+            color: var(--aurora-light);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .aurora-palette-header {
+            padding: var(--aurora-space-4);
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: move;
+        }
+        
+        .aurora-palette-title {
+            display: flex;
+            align-items: center;
+            gap: var(--aurora-space-3);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .aurora-palette-controls {
+            display: flex;
+            gap: var(--aurora-space-2);
+        }
+        
+        .aurora-control-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--aurora-light);
+        }
+        
+        .aurora-control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .aurora-messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--aurora-space-4);
+            display: flex;
+            flex-direction: column;
+            gap: var(--aurora-space-4);
+        }
+        
+        .aurora-message {
+            display: flex;
+            gap: var(--aurora-space-3);
+            animation: aurora-slide-up 0.3s ease-out;
+            max-width: 85%;
+        }
+        
+        .aurora-message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+        
+        .aurora-message.ai {
+            align-self: flex-start;
+        }
+        
+        .aurora-message.system {
+            align-self: center;
+            max-width: 70%;
+        }
+        
+        .aurora-message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        
+        .aurora-message.user .aurora-message-avatar {
+            background: var(--aurora-gradient);
+        }
+        
+        .aurora-message.ai .aurora-message-avatar {
+            background: var(--aurora-secondary);
+        }
+        
+        .aurora-message.system .aurora-message-avatar {
+            background: var(--aurora-dark);
+        }
+        
+        .aurora-message-content {
+            background: rgba(255, 255, 255, 0.1);
+            padding: var(--aurora-space-3) var(--aurora-space-4);
+            border-radius: var(--aurora-radius-lg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .aurora-message.user .aurora-message-content {
+            background: var(--aurora-gradient);
+        }
+        
+        .aurora-message-timestamp {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-top: var(--aurora-space-1);
+        }
+        
+        .aurora-suggestions {
+            padding: var(--aurora-space-4);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .aurora-suggestion-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--aurora-space-2);
+            margin-bottom: var(--aurora-space-3);
+        }
+        
+        .aurora-suggestion-chip {
+            padding: var(--aurora-space-2) var(--aurora-space-3);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--aurora-radius-full);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: var(--aurora-space-1);
+        }
+        
+        .aurora-suggestion-chip:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .aurora-input-container {
+            padding: var(--aurora-space-4);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .aurora-input-wrapper {
+            display: flex;
+            gap: var(--aurora-space-2);
+            align-items: flex-end;
+        }
+        
+        .aurora-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--aurora-light);
+            border-radius: var(--aurora-radius-lg);
+            padding: var(--aurora-space-3) var(--aurora-space-4);
+            font-size: 0.875rem;
+            resize: none;
+            min-height: 44px;
+            max-height: 120px;
+            transition: all 0.2s ease;
+        }
+        
+        .aurora-input:focus {
+            outline: none;
+            border-color: var(--aurora-primary);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+        
+        .aurora-send-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--aurora-gradient);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .aurora-send-btn:hover:not(:disabled) {
+            transform: scale(1.1);
+            box-shadow: var(--aurora-glow-shadow);
+        }
+        
+        .aurora-send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .aurora-typing-indicator {
+            display: none;
+            align-items: center;
+            gap: var(--aurora-space-3);
+            padding: var(--aurora-space-3);
+        }
+        
+        .aurora-typing-indicator.active {
+            display: flex;
+        }
+        
+        /* Scrollbar Styling */
+        .aurora-messages-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .aurora-messages-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .aurora-messages-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+        
+        .aurora-messages-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .aurora-palette {
+                width: 100vw;
+                height: 100vh;
+                border-radius: 0;
+            }
+            
+            .aurora-message {
+                max-width: 95%;
+            }
+        }
+        
+        /* Minimized State */
+        .aurora-palette.minimized {
+            height: 60px;
+        }
+        
+        .aurora-palette.minimized .aurora-messages-container,
+        .aurora-palette.minimized .aurora-suggestions,
+        .aurora-palette.minimized .aurora-input-container {
+            display: none;
+        }
+        
+        /* Fullscreen State */
+        .aurora-palette.fullscreen {
+            width: 100vw;
+            height: 100vh;
+            border-radius: 0;
+        }
+        
+        .aurora-palette.fullscreen .aurora-messages-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="aurora-palette" id="aurora-palette">
+        <!-- Header -->
+        <div class="aurora-palette-header">
+            <div class="aurora-palette-title">
+                <span style="font-size: 1.5rem;">✨</span>
+                <span>Aurora Assistant</span>
+                <span class="aurora-typing-indicator" id="typing-indicator">
+                    <div class="aurora-typing-dot"></div>
+                    <div class="aurora-typing-dot"></div>
+                    <div class="aurora-typing-dot"></div>
+                </span>
+            </div>
+            <div class="aurora-palette-controls">
+                <button class="aurora-control-btn" onclick="toggleMinimize()" title="Minimize">−</button>
+                <button class="aurora-control-btn" onclick="toggleFullscreen()" title="Fullscreen">⛶</button>
+                <button class="aurora-control-btn" onclick="closePalette()" title="Close">✕</button>
+            </div>
+        </div>
+        
+        <!-- Messages Container -->
+        <div class="aurora-messages-container" id="messages-container">
+            <!-- Welcome Message -->
+            <div class="aurora-message ai">
+                <div class="aurora-message-avatar">🤖</div>
+                <div>
+                    <div class="aurora-message-content">
+                        Hello! I'm Aurora, your AI assistant. I can help you with tasks, find information, and optimize your system. How can I assist you today?
+                    </div>
+                    <div class="aurora-message-timestamp">Just now</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Suggestions -->
+        <div class="aurora-suggestions">
+            <div class="aurora-suggestion-chips" id="suggestion-chips">
+                <!-- Suggestion chips will be added here -->
+            </div>
+        </div>
+        
+        <!-- Input Area -->
+        <div class="aurora-input-container">
+            <div class="aurora-input-wrapper">
+                <textarea 
+                    class="aurora-input" 
+                    id="message-input" 
+                    placeholder="Type your message..."
+                    rows="1"
+                    onkeydown="handleInputKeydown(event)"
+                    oninput="adjustTextareaHeight(this)"
+                ></textarea>
+                <button class="aurora-send-btn" id="send-btn" onclick="sendMessage()" title="Send">
+                    <span>➤</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Aurora Conversational Palette
+        class AuroraPalette {
+            constructor() {
+                this.messages = [];
+                this.isTyping = false;
+                this.suggestions = [
+                    { id: "1", text: "Open Firefox", action: "open_firefox", icon: "🌐" },
+                    { id: "2", text: "Find Documents", action: "find_documents", icon: "📁" },
+                    { id: "3", text: "System Status", action: "system_status", icon: "💻" },
+                    { id: "4", text: "Help & Support", action: "help_support", icon: "❓" },
+                ];
+                
+                this.init();
+            }
+            
+            init() {
+                this.renderSuggestions();
+                this.setupEventListeners();
+                this.focusInput();
+            }
+            
+            setupEventListeners() {
+                const input = document.getElementById('message-input');
+                const sendBtn = document.getElementById('send-btn');
+                
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        this.sendMessage();
+                    }
+                });
+                
+                sendBtn.addEventListener('click', () => this.sendMessage());
+            }
+            
+            focusInput() {
+                document.getElementById('message-input').focus();
+            }
+            
+            renderSuggestions() {
+                const container = document.getElementById('suggestion-chips');
+                container.innerHTML = this.suggestions.map(suggestion => `
+                    <div class="aurora-suggestion-chip" onclick="handleSuggestion('${suggestion.action}')">
+                        <span>${suggestion.icon}</span>
+                        <span>${suggestion.text}</span>
+                    </div>
+                `).join('');
+            }
+            
+            addMessage(type, content, timestamp = new Date()) {
+                const message = {
+                    id: uuidv4(),
+                    type: type,
+                    content: content,
+                    timestamp: timestamp
+                };
+                
+                this.messages.push(message);
+                this.renderMessage(message);
+                this.scrollToBottom();
+            }
+            
+            renderMessage(message) {
+                const container = document.getElementById('messages-container');
+                const messageEl = document.createElement('div');
+                messageEl.className = `aurora-message ${message.type}`;
+                messageEl.innerHTML = `
+                    <div class="aurora-message-avatar">
+                        ${message.type === 'user' ? '👤' : message.type === 'ai' ? '🤖' : '⚙️'}
+                    </div>
+                    <div>
+                        <div class="aurora-message-content">${message.content}</div>
+                        <div class="aurora-message-timestamp">${this.formatTime(message.timestamp)}</div>
+                    </div>
+                `;
+                
+                container.appendChild(messageEl);
+                
+                // Animate message appearance
+                messageEl.style.animation = 'aurora-slide-up 0.3s ease-out';
+            }
+            
+            sendMessage() {
+                const input = document.getElementById('message-input');
+                const message = input.value.trim();
+                
+                if (!message) return;
+                
+                // Add user message
+                this.addMessage('user', message);
+                
+                // Clear input
+                input.value = '';
+                this.adjustTextareaHeight(input);
+                
+                // Show typing indicator
+                this.showTypingIndicator();
+                
+                // Simulate AI response
+                setTimeout(() => {
+                    this.hideTypingIndicator();
+                    this.processUserMessage(message);
+                }, 1500);
+            }
+            
+            processUserMessage(message) {
+                // Simple response logic (would connect to actual AI)
+                const responses = {
+                    'open_firefox': 'Opening Firefox for you...',
+                    'find_documents': 'Searching for your documents...',
+                    'system_status': 'Checking system status...',
+                    'help_support': 'I'm here to help! What do you need assistance with?'
+                };
+                
+                const response = responses[message] || 
+                    `I understand you said: "${message}". I'm processing your request...`;
+                
+                this.addMessage('ai', response);
+            }
+            
+            showTypingIndicator() {
+                const indicator = document.getElementById('typing-indicator');
+                indicator.classList.add('active');
+                this.isTyping = true;
+            }
+            
+            hideTypingIndicator() {
+                const indicator = document.getElementById('typing-indicator');
+                indicator.classList.remove('active');
+                this.isTyping = false;
+            }
+            
+            scrollToBottom() {
+                const container = document.getElementById('messages-container');
+                container.scrollTop = container.scrollHeight;
+            }
+            
+            formatTime(timestamp) {
+                const now = new Date();
+                const diff = now - timestamp;
+                
+                if (diff < 60000) return 'Just now';
+                if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+                if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
+                return timestamp.toLocaleDateString();
+            }
+            
+            adjustTextareaHeight(textarea) {
+                textarea.style.height = 'auto';
+                textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+            }
+        }
+        
+        // Global functions
+        function toggleMinimize() {
+            const palette = document.getElementById('aurora-palette');
+            palette.classList.toggle('minimized');
+        }
+        
+        function toggleFullscreen() {
+            const palette = document.getElementById('aurora-palette');
+            palette.classList.toggle('fullscreen');
+        }
+        
+        function closePalette() {
+            const palette = document.getElementById('aurora-palette');
+            palette.style.display = 'none';
+        }
+        
+        function handleSuggestion(action) {
+            const input = document.getElementById('message-input');
+            const suggestionTexts = {
+                'open_firefox': 'Open Firefox',
+                'find_documents': 'Find my documents',
+                'system_status': 'Show system status',
+                'help_support': 'Help and support'
+            };
+            
+            input.value = suggestionTexts[action] || action;
+            input.focus();
+        }
+        
+        function handleInputKeydown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                auroraPalette.sendMessage();
+            }
+        }
+        
+        function adjustTextareaHeight(textarea) {
+            auroraPalette.adjustTextareaHeight(textarea);
+        }
+        
+        function sendMessage() {
+            auroraPalette.sendMessage();
+        }
+        
+        // UUID generator
+        function uuidv4() {
+            return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+                (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+            );
+        }
+        
+        // Initialize the palette
+        const auroraPalette = new AuroraPalette();
+        
+        // Make palette draggable
+        let isDragging = false;
+        let currentX;
+        let currentY;
+        let initialX;
+        let initialY;
+        let xOffset = 0;
+        let yOffset = 0;
+        
+        const palette = document.getElementById('aurora-palette');
+        const header = document.querySelector('.aurora-palette-header');
+        
+        header.addEventListener('mousedown', dragStart);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', dragEnd);
+        
+        function dragStart(e) {
+            if (e.target.closest('.aurora-palette-controls')) return;
+            
+            initialX = e.clientX - xOffset;
+            initialY = e.clientY - yOffset;
+            
+            if (e.target === header || header.contains(e.target)) {
+                isDragging = true;
+            }
+        }
+        
+        function drag(e) {
+            if (isDragging) {
+                e.preventDefault();
+                currentX = e.clientX - initialX;
+                currentY = e.clientY - initialY;
+                
+                xOffset = currentX;
+                yOffset = currentY;
+                
+                palette.style.transform = `translate(${currentX}px, ${currentY}px)`;
+            }
+        }
+        
+        function dragEnd(e) {
+            initialX = currentX;
+            initialY = currentY;
+            isDragging = false;
+        }
+    </script>
+</body>
+</html>
+        
