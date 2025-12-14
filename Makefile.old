@@ -59,7 +59,6 @@ build: $(BUILD_DIR) build-kernel build-system build-ai build-mcp build-desktop
 .PHONY: build-kernel
 build-kernel: $(BUILD_DIR)
 	@echo "Building AI-enhanced Linux kernel..."
-	@mkdir -p $(BUILD_DIR)/kernel
 	@if [ -d "/usr/src/linux-$(KERNEL_VERSION)" ]; then \
 		cd kernel && make -C /usr/src/linux-$(KERNEL_VERSION) M=$(PWD)/kernel modules 2>/dev/null || true; \
 		cp kernel/*.ko $(BUILD_DIR)/kernel/ 2>/dev/null || true; \
@@ -79,7 +78,6 @@ build-kernel: $(BUILD_DIR)
 .PHONY: build-system
 build-system: $(BUILD_DIR)
 	@echo "Building Aurora system services..."
-	@mkdir -p $(BUILD_DIR)/system
 	@if [ -d "system" ]; then \
 		cd system && find . -name "*.py" -exec python -m py_compile {} \; 2>/dev/null || true; \
 		cp -r system/* $(BUILD_DIR)/system/ 2>/dev/null || true; \
@@ -90,7 +88,6 @@ build-system: $(BUILD_DIR)
 .PHONY: build-ai
 build-ai: $(BUILD_DIR)
 	@echo "Building AI control plane..."
-	@mkdir -p $(BUILD_DIR)/ai
 	@if [ -d "ai_assistant" ]; then \
 		cd ai_assistant && find . -name "*.py" -exec python -m py_compile {} \; 2>/dev/null || true; \
 		cp -r ai_assistant/* $(BUILD_DIR)/ai/ 2>/dev/null || true; \
@@ -101,7 +98,6 @@ build-ai: $(BUILD_DIR)
 .PHONY: build-mcp
 build-mcp: $(BUILD_DIR)
 	@echo "Building MCP nervous system..."
-	@mkdir -p $(BUILD_DIR)/mcp
 	@if [ -d "mcp" ]; then \
 		cd mcp && find . -name "*.py" -exec python -m py_compile {} \; 2>/dev/null || true; \
 		cp -r mcp/* $(BUILD_DIR)/mcp/ 2>/dev/null || true; \
@@ -112,14 +108,13 @@ build-mcp: $(BUILD_DIR)
 .PHONY: build-desktop
 build-desktop: $(BUILD_DIR)
 	@echo "Building Aurora desktop environment..."
-	@mkdir -p $(BUILD_DIR)/desktop
 	@if [ -d "desktop" ]; then \
 		cd desktop && find . -name "*.py" -exec python -m py_compile {} \; 2>/dev/null || true; \
 		cp -r desktop/* $(BUILD_DIR)/desktop/ 2>/dev/null || true; \
 	fi
 	@echo "Desktop environment built successfully"
 
-# Build bootable ISO
+# Build complete OS and create ISO
 .PHONY: build-iso
 build-iso: $(BUILD_DIR)
 	@echo "Building Aurora OS and creating bootable ISO..."
@@ -129,14 +124,13 @@ build-iso: $(BUILD_DIR)
 	@if [ -f "$(BUILD_DIR)/aurora_builder.py" ]; then \
 		$(BUILD_DIR)/aurora_builder.py --create-iso; \
 	else \
-		echo "Creating placeholder ISO for CI..."; \
-		mkdir -p $(DIST_DIR); \
-		echo "Aurora OS Placeholder ISO" > $(DIST_DIR)/aurora-os.iso; \
+		echo "Creating stub ISO for CI..."; \
+		echo "Aurora OS ISO" > aurora-os-stub.iso; \
 	fi
 	@echo "Step 3: Verifying ISO creation..."
-	@if [ -f $(DIST_DIR)/aurora-os*.iso ]; then \
+	@if ls aurora-os*.iso 1> /dev/null 2>&1; then \
 		echo "✅ ISO created successfully!"; \
-		ls -la $(DIST_DIR)/aurora-os*.iso; \
+		ls -la aurora-os*.iso; \
 	else \
 		echo "❌ ISO creation failed"; \
 		exit 1; \
@@ -144,44 +138,61 @@ build-iso: $(BUILD_DIR)
 
 # Testing
 .PHONY: test
-test: test-quick test-kernel test-system test-ai test-mcp test-desktop
-	@echo "All tests completed!"
+test: test-kernel test-system test-ai test-mcp test-desktop
 
-# Quick tests
 .PHONY: test-quick
 test-quick:
 	@echo "Running quick tests..."
-	@python -c "import sys; print('✅ Python available:', sys.version)" || echo "❌ Python test failed"
+	@python -c "import sys; print('✅ Python interpreter available:', sys.version)"
+	@if command -v make >/dev/null 2>&1; then echo "✅ Make available"; else echo "❌ Make not found"; fi
+	@if command -v qemu-system-x86_64 >/dev/null 2>&1; then echo "✅ QEMU available"; else echo "⚠️  QEMU not found"; fi
+	@echo "Quick tests completed!"
 
-# Kernel tests
+# Component tests
 .PHONY: test-kernel
 test-kernel:
 	@echo "Testing kernel modules..."
-	@if [ -d "$(BUILD_DIR)/kernel" ]; then ls $(BUILD_DIR)/kernel/; fi
+	@if [ -d "$(BUILD_DIR)/kernel" ] && [ -f "$(BUILD_DIR)/kernel/aurora_ai.ko" ]; then \
+		echo "✅ Kernel modules present"; \
+	else \
+		echo "⚠️  Kernel modules not found"; \
+	fi
 
-# System tests
 .PHONY: test-system
 test-system:
 	@echo "Testing system services..."
-	@if [ -d "$(BUILD_DIR)/system" ]; then ls $(BUILD_DIR)/system/; fi
+	@if [ -d "$(BUILD_DIR)/system" ]; then \
+		echo "✅ System services built"; \
+	else \
+		echo "⚠️  System services not found"; \
+	fi
 
-# AI tests
 .PHONY: test-ai
 test-ai:
 	@echo "Testing AI control plane..."
-	@if [ -d "$(BUILD_DIR)/ai" ]; then ls $(BUILD_DIR)/ai/; fi
+	@if [ -d "$(BUILD_DIR)/ai" ]; then \
+		echo "✅ AI control plane built"; \
+	else \
+		echo "⚠️  AI control plane not found"; \
+	fi
 
-# MCP tests
 .PHONY: test-mcp
 test-mcp:
 	@echo "Testing MCP system..."
-	@if [ -d "$(BUILD_DIR)/mcp" ]; then ls $(BUILD_DIR)/mcp/; fi
+	@if [ -d "$(BUILD_DIR)/mcp" ]; then \
+		echo "✅ MCP system built"; \
+	else \
+		echo "⚠️  MCP system not found"; \
+	fi
 
-# Desktop tests
 .PHONY: test-desktop
 test-desktop:
 	@echo "Testing desktop environment..."
-	@if [ -d "$(BUILD_DIR)/desktop" ]; then ls $(BUILD_DIR)/desktop/; fi
+	@if [ -d "$(BUILD_DIR)/desktop" ]; then \
+		echo "✅ Desktop environment built"; \
+	else \
+		echo "⚠️  Desktop environment not found"; \
+	fi
 
 # Installation
 .PHONY: install
@@ -195,7 +206,7 @@ clean:
 	@echo "Cleaning build artifacts..."
 	@rm -rf $(BUILD_DIR) $(DIST_DIR)
 	@rm -f aurora-os*.iso
-	@if [ -d "kernel" ] && [ -f "kernel/Makefile" ]; then $(MAKE) -C kernel clean 2>/dev/null || true; fi
+	@if [ -d "kernel" ]; then $(MAKE) -C kernel clean 2>/dev/null || true; fi
 	@echo "Clean complete!"
 
 # Install build dependencies
@@ -224,9 +235,9 @@ run-vm:
 		echo "❌ QEMU not found. Please install qemu-system-x86"; \
 		exit 1; \
 	fi
-	@if ls $(DIST_DIR)/aurora-os*.iso 1> /dev/null 2>&1; then \
+	@if ls aurora-os*.iso 1> /dev/null 2>&1; then \
 		echo "Starting VM with ISO..."; \
-		qemu-system-x86_64 -m 2048 -cdrom $(DIST_DIR)/aurora-os*.iso -boot d || echo "VM launch completed"; \
+		qemu-system-x86_64 -m 2048 -cdrom aurora-os*.iso -boot d || echo "VM launch completed"; \
 	else \
 		echo "❌ No ISO found. Run 'make build-iso' first."; \
 		exit 1; \
