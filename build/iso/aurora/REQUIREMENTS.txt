@@ -1,0 +1,39 @@
+Aurora OS System Requirements
+============================
+
+MINIMUM REQUIREMENTS:
+- Processor: x86_64 CPU with AVX2 support
+- Memory: 4GB RAM
+- Storage: 20GB free disk space
+- Graphics: VESA-compatible graphics card
+
+RECOMMENDED REQUIREMENTS:
+- Processor: Intel Core i7/i9 or AMD Ryzen 7/9
+- Memory: 8GB+ RAM
+- Storage: 50GB+ SSD storage
+- Graphics: NVIDIA/AMD GPU with 4GB+ VRAM
+
+AI WORKLOAD REQUIREMENTS:
+- Processor: Multi-core with AI acceleration
+- Memory: 16GB+ RAM
+- Storage: 100GB+ NVMe SSD
+- Graphics: NVIDIA RTX/AMD Radeon Pro
+
+ENTERPRISE FEATURES:
+- Network: Gigabit Ethernet connection
+- Security: TPM 2.0 chip recommended
+- Virtualization: VT-x/AMD-V support
+- Clustering: Multiple identical nodes
+
+SUPPORTED HARDWARE:
+- Intel: Core series, Xeon series
+- AMD: Ryzen series, EPYC series
+- NVIDIA: GTX/RTX series, Tesla
+- AMD: Radeon series, Instinct
+
+VIRTUALIZATION:
+- VMware ESXi 6.7+
+- Microsoft Hyper-V 2016+
+- KVM/QEMU with virtio drivers
+- VirtualBox 6.0+
+- Docker containers

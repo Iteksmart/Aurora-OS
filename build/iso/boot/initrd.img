@@ -1,0 +1,10 @@
+# Aurora OS Demo Initramfs
+# This is a demonstration stub for the initial RAM filesystem
+# Real initramfs would include:
+# - AI assistant startup scripts
+# - Hardware detection modules
+# - Enterprise security initialization
+# - Performance tuning utilities
+init_version=1.0
+components=[ai_assistant, enterprise_console, system_optimizer]
+boot_mode=live
