@@ -649,6 +649,11 @@ static bool am65_cpts_match_tx_ts(struct am65_cpts *cpts,
 		struct am65_cpts_skb_cb_data *skb_cb =
 					(struct am65_cpts_skb_cb_data *)skb->cb;
 
+		if ((ptp_classify_raw(skb) & PTP_CLASS_V1) &&
+		    ((mtype_seqid & AM65_CPTS_EVENT_1_SEQUENCE_ID_MASK) ==
+		     (skb_cb->skb_mtype_seqid & AM65_CPTS_EVENT_1_SEQUENCE_ID_MASK)))
+			mtype_seqid = skb_cb->skb_mtype_seqid;
+
 		if (mtype_seqid == skb_cb->skb_mtype_seqid) {
 			u64 ns = event->timestamp;
 
@@ -918,14 +923,13 @@ static int am65_cpts_of_parse(struct am65_cpts *cpts, struct device_node *node)
 	return cpts_of_mux_clk_setup(cpts, node);
 }
 
-static void am65_cpts_release(void *data)
+void am65_cpts_release(struct am65_cpts *cpts)
 {
-	struct am65_cpts *cpts = data;
-
 	ptp_clock_unregister(cpts->ptp_clock);
 	am65_cpts_disable(cpts);
 	clk_disable_unprepare(cpts->refclk);
 }
+EXPORT_SYMBOL_GPL(am65_cpts_release);
 
 struct am65_cpts *am65_cpts_create(struct device *dev, void __iomem *regs,
 				   struct device_node *node)
@@ -1003,18 +1007,12 @@ struct am65_cpts *am65_cpts_create(struct device *dev, void __iomem *regs,
 	}
 	cpts->phc_index = ptp_clock_index(cpts->ptp_clock);
 
-	ret = devm_add_action_or_reset(dev, am65_cpts_release, cpts);
-	if (ret) {
-		dev_err(dev, "failed to add ptpclk reset action %d", ret);
-		return ERR_PTR(ret);
-	}
-
 	ret = devm_request_threaded_irq(dev, cpts->irq, NULL,
 					am65_cpts_interrupt,
 					IRQF_ONESHOT, dev_name(dev), cpts);
 	if (ret < 0) {
 		dev_err(cpts->dev, "error attaching irq %d\n", ret);
-		return ERR_PTR(ret);
+		goto reset_ptpclk;
 	}
 
 	dev_info(dev, "CPTS ver 0x%08x, freq:%u, add_val:%u\n",
@@ -1023,6 +1021,8 @@ struct am65_cpts *am65_cpts_create(struct device *dev, void __iomem *regs,
 
 	return cpts;
 
+reset_ptpclk:
+	am65_cpts_release(cpts);
 refclk_disable:
 	clk_disable_unprepare(cpts->refclk);
 	return ERR_PTR(ret);
