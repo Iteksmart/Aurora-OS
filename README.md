@@ -28,10 +28,16 @@ qemu-system-x86_64 -cdrom aurora-os.iso -m 4G -smp 2
 
 **Current Release: v0.1.0 (519 MB)**
 
-- **Direct Download**: [aurora-os.iso](https://github.com/Iteksmart/Aurora-OS/releases/download/v0.1.0/aurora-os.iso)
-- **Checksums**: 
-  - SHA256: `9140badda5ff8ed09de31e0adcd60dc969c478ab9c7f8a899935f369e5278a8e`
-  - MD5: Available in repository
+🔗 **[Download from GitHub Releases](https://github.com/Iteksmart/Aurora-OS/releases/tag/v0.1.0)**
+
+**Direct Links**:
+- [aurora-os.iso](https://github.com/Iteksmart/Aurora-OS/releases/download/v0.1.0/aurora-os.iso) (519 MB)
+- [SHA256 Checksum](https://github.com/Iteksmart/Aurora-OS/releases/download/v0.1.0/aurora-os.iso.sha256)
+- [MD5 Checksum](https://github.com/Iteksmart/Aurora-OS/releases/download/v0.1.0/aurora-os.iso.md5)
+
+**Checksums**: 
+- **SHA256**: `9140badda5ff8ed09de31e0adcd60dc969c478ab9c7f8a899935f369e5278a8e`
+- **MD5**: `5e01b38a149432676fef8beb201ab4dd`
 
 ### What's Included
 - **Linux Kernel 6.1.115 LTS** (5.7 MB compiled)
