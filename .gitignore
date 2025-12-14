@@ -87,3 +87,6 @@ docs/_templates/
 # Large downloads (optional - comment out if you want to track)
 # kernel/linux-6.1.115.tar.xz
 # kernel/linux-*.tar.*
+aurora-os.iso
+aurora-os.iso.*
+*.iso
