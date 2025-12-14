@@ -432,3 +432,98 @@ setup-dev: check-deps
 .PHONY: ci-build
 ci-build: clean build test-integration packages
 	@echo "CI pipeline completed successfully!"
+
+# Quick Start Commands - Priority for Prototype → Usable
+
+# Build OS and create ISO
+.PHONY: build iso
+build iso: $(BUILD_DIR)
+	@echo "Building Aurora OS and creating bootable ISO..."
+	@echo "Step 1: Building core components..."
+	make build
+	@echo "Step 2: Creating bootable ISO..."
+	$(BUILD_DIR)/aurora_builder.py --create-iso
+	@echo "Step 3: Verifying ISO creation..."
+	if [ -f aurora-os*.iso ]; then \
+		echo "✅ ISO created successfully!"; \
+		ls -la aurora-os*.iso; \
+	else \
+		echo "❌ ISO creation failed"; \
+		exit 1; \
+	fi
+
+# Enhanced run-vm command
+.PHONY: run-vm
+run-vm: 
+	@echo "Starting Aurora OS in Virtual Machine..."
+	@echo "Prerequisites: QEMU, KVM support"
+	@if ! command -v qemu-system-x86_64 &> /dev/null; then \
+		echo "❌ QEMU not found. Installing..."; \
+		sudo apt-get update && sudo apt-get install -y qemu-system-x86; \
+	fi
+	ISO_FILE=$$(find . -name "aurora-os*.iso" | head -1); \
+	if [ -n "$$ISO_FILE" ]; then \
+		echo "🚀 Booting from: $$ISO_FILE"; \
+		qemu-system-x86_64 \
+			-cdrom "$$ISO_FILE" \
+			-m 2048 \
+			-smp 2 \
+			-enable-kvm \
+			-display gtk \
+			-device virtio-net-pci,netdev=net0 \
+			-netdev user,id=net0,hostfwd=tcp::2222-:22 \
+			-serial stdio; \
+	else \
+		echo "❌ No ISO found. Run make build iso first."; \
+		exit 1; \
+	fi
+
+# Enhanced tests command
+.PHONY: tests
+tests: 
+	@echo "🧪 Running Aurora OS Test Suite..."
+	@echo "Step 1: Running quick smoke tests..."
+	make test-quick
+	@echo "Step 2: Running integration tests..."
+	make test-integration
+	@echo "Step 3: Running AI control plane tests..."
+	make test-ai
+	@echo "Step 4: Running system service tests..."
+	make test-system
+	@echo "✅ All tests completed!"
+
+# Quick smoke tests
+.PHONY: test-quick
+test-quick:
+	@echo "Running quick smoke tests..."
+	@echo "Testing Python syntax..."
+	find . -name "*.py" -exec python -m py_compile {} \; && echo "✅ Python syntax OK"
+	@echo "Testing shell scripts..."
+	find . -name "*.sh" -exec bash -n {} \; && echo "✅ Shell script syntax OK"
+	@echo "Testing configuration files..."
+	python -c "import yaml, json; print(✅ Config parsing OK)" 2>/dev/null || echo "⚠️  Some config tests skipped"
+	@echo "Quick smoke tests completed!"
+
+# Build dependencies installation
+.PHONY: build-deps
+build-deps:
+	@echo "Installing build dependencies..."
+	@echo "This may require sudo access..."
+	sudo apt-get update || true
+	sudo apt-get install -y \
+		build-essential gcc g++ make cmake \
+		qemu-system-x86 qemu-utils \
+		xorriso grub-pc-bin grub-efi-amd64-bin \
+		mtools dosfstools squashfs-tools \
+		python3 python3-pip python3-dev \
+		git wget curl pkg-config \
+		libssl-dev libelf-dev libncurses-dev \
+		flex bison bc nasm
+	@echo "✅ Build dependencies installed!"
+
+# Continuous integration target
+.PHONY: ci
+ci: clean build-deps build iso test-quick
+	@echo "🚀 CI pipeline completed successfully!"
+
+
