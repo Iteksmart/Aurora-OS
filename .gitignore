@@ -1,0 +1,89 @@
+# Aurora OS - Git Ignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Build artifacts
+build/
+dist/
+*.iso
+*.img
+*.vmdk
+*.qcow2
+initramfs/
+isofiles/
+
+# Logs
+*.log
+logs/
+
+# Kernel build artifacts
+*.o
+*.o.*
+*.ko
+*.ko.*
+*.cmd
+.tmp_versions/
+Module.symvers
+modules.order
+.config
+.config.old
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# Documentation
+docs/_build/
+docs/_static/
+docs/_templates/
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
+
+# Large downloads (optional - comment out if you want to track)
+# kernel/linux-6.1.115.tar.xz
+# kernel/linux-*.tar.*

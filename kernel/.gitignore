@@ -1,0 +1,53 @@
+# Linux Kernel Build Artifacts
+*.o
+*.o.*
+*.ko
+*.ko.*
+*.so
+*.so.*
+*.a
+*.i
+*.lst
+*.symtypes
+*.order
+*.elf
+*.bin
+*.gz
+*.bz2
+*.lzma
+*.xz
+*.lzo
+*.lz4
+*.zst
+*.dtb
+*.dtb.S
+*.dtbo
+*.dt.yaml
+
+# Build directories
+*/build/
+*/built-in.o
+*/modules.order
+*/modules.builtin
+*/.tmp_versions/
+*/Module.symvers
+*/Module.markers
+*/.config.old
+*/.config
+
+# Generated files
+*/include/config/
+*/include/generated/
+*/arch/*/include/generated/
+*.log
+tags
+TAGS
+cscope*
+*.patch
+*.diff
+
+# Backup files
+*~
+*.swp
+*.orig
+*.rej
