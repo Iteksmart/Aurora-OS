@@ -3,21 +3,498 @@
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/Iteksmart/Aurora-OS)
 [![Kernel](https://img.shields.io/badge/kernel-6.1.115%20LTS-blue)](https://kernel.org)
 [![License](https://img.shields.io/badge/license-GPL%20v2-blue)](LICENSE)
-[![ISO](https://img.shields.io/badge/ISO-19MB-orange)](https://github.com/Iteksmart/Aurora-OS/releases)
+[![ISO](https://img.shields.io/badge/ISO-519MB-success)](https://github.com/Iteksmart/Aurora-OS/releases)
 
-## 🎉 **NOW BOOTABLE!** Aurora OS is ready to run!
+## 🎉 **FULLY BOOTABLE!** Aurora OS Production Release Ready!
 
-**✅ Complete Linux kernel integration (6.1.115 LTS)**  
-**✅ Automated build system with scripts**  
-**✅ 19MB bootable ISO image ready to test**  
-**✅ Full source code in repository**
+**✅ Complete Linux kernel 6.1.115 LTS**  
+**✅ Python 3.12 + Full Standard Library (300+ MB)**  
+**✅ 519MB bootable ISO with complete OS stack**  
+**✅ GRUB bootloader with multiple boot modes**  
+**✅ Aurora AI Control Plane + MCP System integrated**
 
 ```bash
-# Quick start - Boot Aurora OS in QEMU:
-qemu-system-x86_64 -cdrom aurora-os.iso -m 2G
+# Quick start - Download and test Aurora OS:
+# 1. Download aurora-os.iso from releases
+# 2. Boot with VirtualBox, VMware, or QEMU
+qemu-system-x86_64 -cdrom aurora-os.iso -m 4G -smp 2
 ```
 
-📖 **[Complete Build Guide](BUILD_SUCCESS.md)** | 🚀 **[Getting Started](docs/GETTING_STARTED.md)**
+📖 **[Build Guide](BUILD_SUCCESS.md)** | 🚀 **[Installation & Deployment](#-installation--deployment)** | 📥 **[Download ISO](#-download-aurora-os)**
+
+---
+
+## 📥 Download Aurora OS
+
+**Current Release: v0.1.0 (519 MB)**
+
+- **Direct Download**: [aurora-os.iso](https://github.com/Iteksmart/Aurora-OS/releases/download/v0.1.0/aurora-os.iso)
+- **Checksums**: 
+  - SHA256: `9140badda5ff8ed09de31e0adcd60dc969c478ab9c7f8a899935f369e5278a8e`
+  - MD5: Available in repository
+
+### What's Included
+- **Linux Kernel 6.1.115 LTS** (5.7 MB compiled)
+- **Python 3.12** + complete standard library (~300 MB)
+- **System Libraries**: glibc, libm, libdl, libpthread, libz
+- **BusyBox**: 150+ Unix utilities
+- **Aurora AI Control Plane** + MCP Nervous System
+- **AI Assistant** + Voice Interface
+- **System Services** + Security Framework
+- **GRUB Bootloader** with multiple boot modes
+
+---
+
+## 🚀 Installation & Deployment
+
+Aurora OS can be deployed in multiple ways depending on your needs. Choose the option that best fits your use case.
+
+### Option 1: 💻 VirtualBox (Recommended for Testing)
+
+**Perfect for: Development, testing, and evaluation**
+
+1. **Download VirtualBox**: https://www.virtualbox.org/wiki/Downloads
+
+2. **Create New Virtual Machine**:
+   ```
+   - Name: Aurora OS
+   - Type: Linux
+   - Version: Other Linux (64-bit)
+   - Memory: 4096 MB (4 GB minimum, 8 GB recommended)
+   - Hard disk: Create virtual hard disk (20 GB+)
+   ```
+
+3. **Configure VM Settings**:
+   ```
+   - System → Processor: 2 CPUs (4 recommended)
+   - System → Acceleration: Enable VT-x/AMD-V
+   - Storage → Controller IDE: Add aurora-os.iso as CD/DVD
+   - Display → Video Memory: 128 MB
+   - Network → Adapter 1: NAT or Bridged
+   ```
+
+4. **Boot Aurora OS**:
+   - Start the VM
+   - Aurora OS will boot from the ISO
+   - Follow on-screen instructions
+
+**VirtualBox Commands** (CLI):
+```bash
+# Create VM
+VBoxManage createvm --name "Aurora-OS" --ostype "Linux_64" --register
+
+# Configure VM
+VBoxManage modifyvm "Aurora-OS" --memory 4096 --cpus 2 --vram 128
+VBoxManage modifyvm "Aurora-OS" --nic1 nat --nictype1 82540EM
+VBoxManage modifyvm "Aurora-OS" --boot1 dvd --boot2 disk
+
+# Add storage
+VBoxManage storagectl "Aurora-OS" --name "IDE" --add ide
+VBoxManage storageattach "Aurora-OS" --storagectl "IDE" --port 0 --device 0 --type dvddrive --medium aurora-os.iso
+
+# Start VM
+VBoxManage startvm "Aurora-OS"
+```
+
+---
+
+### Option 2: 🖥️ VMware Workstation/Fusion
+
+**Perfect for: Enterprise testing, development environments**
+
+1. **Download VMware**:
+   - **Workstation** (Windows/Linux): https://www.vmware.com/products/workstation-pro.html
+   - **Fusion** (macOS): https://www.vmware.com/products/fusion.html
+
+2. **Create New Virtual Machine**:
+   - File → New Virtual Machine
+   - Choose "Custom (advanced)"
+   - Select "I will install the operating system later"
+   - Guest OS: Linux → Other Linux 5.x or later kernel 64-bit
+
+3. **Configure VM**:
+   ```
+   - Memory: 4 GB minimum (8 GB recommended)
+   - Processors: 2 cores (4 recommended)
+   - Network: NAT or Bridged
+   - Hard Disk: 20 GB minimum
+   ```
+
+4. **Attach ISO**:
+   - VM Settings → CD/DVD (IDE)
+   - Check "Connect at power on"
+   - Use ISO image file: aurora-os.iso
+
+5. **Boot**:
+   - Power on the virtual machine
+   - Aurora OS will boot automatically
+
+---
+
+### Option 3: 🔥 QEMU (Command Line)
+
+**Perfect for: Quick testing, CI/CD, headless servers**
+
+#### Install QEMU:
+```bash
+# Ubuntu/Debian
+sudo apt install qemu-system-x86
+
+# Fedora/RHEL
+sudo dnf install qemu-system-x86
+
+# macOS
+brew install qemu
+
+# Arch Linux
+sudo pacman -S qemu-full
+```
+
+#### Basic Boot (Graphical):
+```bash
+qemu-system-x86_64 \
+  -cdrom aurora-os.iso \
+  -m 4G \
+  -smp 2 \
+  -enable-kvm
+```
+
+#### Advanced Configuration:
+```bash
+# Create virtual disk (optional for persistence)
+qemu-img create -f qcow2 aurora-disk.qcow2 20G
+
+# Boot with virtual disk and more options
+qemu-system-x86_64 \
+  -cdrom aurora-os.iso \
+  -drive file=aurora-disk.qcow2,format=qcow2 \
+  -m 8G \
+  -smp cores=4 \
+  -enable-kvm \
+  -cpu host \
+  -vga virtio \
+  -display gtk \
+  -net nic,model=virtio \
+  -net user \
+  -boot order=d
+```
+
+#### Headless Mode (No GUI):
+```bash
+qemu-system-x86_64 \
+  -cdrom aurora-os.iso \
+  -m 4G \
+  -smp 2 \
+  -nographic \
+  -serial stdio
+```
+
+#### With VNC Access:
+```bash
+qemu-system-x86_64 \
+  -cdrom aurora-os.iso \
+  -m 4G \
+  -smp 2 \
+  -vnc :1
+
+# Connect with VNC client to: localhost:5901
+```
+
+**QEMU Options Explained**:
+- `-m 4G`: Allocate 4GB RAM
+- `-smp 2`: Use 2 CPU cores
+- `-enable-kvm`: Enable hardware virtualization (Linux hosts)
+- `-boot order=d`: Boot from CD-ROM first
+- `-cpu host`: Use host CPU features
+- `-vga virtio`: Better graphics performance
+
+---
+
+### Option 4: 💿 Bootable USB Drive
+
+**Perfect for: Physical hardware testing, installation, live system**
+
+#### Create Bootable USB (Linux/macOS):
+
+```bash
+# WARNING: This will erase all data on the USB drive!
+# Replace /dev/sdX with your actual USB device (e.g., /dev/sdb)
+
+# 1. Find your USB device
+lsblk
+
+# 2. Unmount the USB drive (if mounted)
+sudo umount /dev/sdX*
+
+# 3. Write ISO to USB
+sudo dd if=aurora-os.iso of=/dev/sdX bs=4M status=progress oflag=sync
+
+# 4. Verify write
+sync
+```
+
+#### Create Bootable USB (Windows):
+
+**Option A: Rufus (Recommended)**
+1. Download Rufus: https://rufus.ie/
+2. Insert USB drive (4GB+ required)
+3. Select aurora-os.iso
+4. Partition scheme: MBR
+5. Target system: BIOS or UEFI
+6. Click START
+
+**Option B: Balena Etcher**
+1. Download Etcher: https://www.balena.io/etcher/
+2. Select aurora-os.iso
+3. Select target USB drive
+4. Flash!
+
+**Option C: Windows Command Line**
+```powershell
+# Run as Administrator
+# List disks
+wmic diskdrive list brief
+
+# Use Win32DiskImager or similar tool
+# OR use WSL with dd command above
+```
+
+#### Boot from USB:
+1. Insert USB drive into target computer
+2. Restart computer
+3. Enter BIOS/UEFI (usually F2, F12, DEL, or ESC during boot)
+4. Change boot order to boot from USB first
+5. Save and exit
+6. Aurora OS will boot from USB
+
+---
+
+### Option 5: 🖥️ Bare Metal Installation
+
+**Perfect for: Production use, dedicated systems**
+
+#### Prerequisites:
+- Computer with 4GB+ RAM (8GB+ recommended)
+- 20GB+ storage space
+- USB drive with Aurora OS (see Option 4)
+- Backup of existing data (if dual-booting)
+
+#### Installation Steps:
+
+1. **Boot from USB**:
+   - Insert Aurora OS USB drive
+   - Boot from USB (see Option 4)
+
+2. **Choose Installation Mode**:
+   - Select "Install Aurora OS" from GRUB menu
+   - Or run: `sudo aurora-installer` from live system
+
+3. **Partition Disk**:
+   ```bash
+   # Automatic (full disk):
+   sudo aurora-installer --auto --disk /dev/sda
+   
+   # Manual partitioning:
+   sudo aurora-installer --manual
+   
+   # Dual-boot (preserve existing OS):
+   sudo aurora-installer --dual-boot
+   ```
+
+4. **Installation Options**:
+   - **Desktop**: Full graphical environment
+   - **Server**: Minimal installation
+   - **Developer**: Includes development tools
+   - **Enterprise**: With management features
+
+5. **Post-Installation**:
+   - Remove USB drive
+   - Reboot system
+   - Aurora OS boots from hard drive
+
+#### Minimum System Requirements:
+- **Processor**: 64-bit x86 CPU (2+ cores recommended)
+- **RAM**: 4 GB minimum (8 GB+ recommended)
+- **Storage**: 20 GB minimum (50 GB+ recommended)
+- **Graphics**: Any GPU (VirtIO supported)
+- **Network**: Ethernet or WiFi
+
+#### Recommended System Requirements:
+- **Processor**: Quad-core 2.0 GHz+
+- **RAM**: 16 GB+
+- **Storage**: 100 GB+ SSD
+- **Graphics**: Dedicated GPU
+- **Network**: Gigabit Ethernet
+
+---
+
+### Option 6: ☁️ Cloud Deployment
+
+**Perfect for: Enterprise, development teams, CI/CD**
+
+#### AWS EC2:
+```bash
+# Upload ISO to S3
+aws s3 cp aurora-os.iso s3://your-bucket/
+
+# Create VM import task
+aws ec2 import-image \
+  --description "Aurora OS" \
+  --disk-containers "Format=raw,UserBucket={S3Bucket=your-bucket,S3Key=aurora-os.iso}"
+```
+
+#### Google Cloud Platform:
+```bash
+# Upload to Cloud Storage
+gsutil cp aurora-os.iso gs://your-bucket/
+
+# Create custom image
+gcloud compute images create aurora-os \
+  --source-uri=gs://your-bucket/aurora-os.iso
+```
+
+#### Azure:
+```bash
+# Upload VHD (convert ISO first)
+az storage blob upload \
+  --account-name youraccount \
+  --container-name images \
+  --name aurora-os.vhd \
+  --file aurora-os.vhd
+```
+
+---
+
+### Option 7: 🐳 Docker Container (Development)
+
+**Perfect for: Development, testing Aurora components**
+
+```dockerfile
+# Dockerfile for Aurora OS development
+FROM ubuntu:24.04
+
+# Install QEMU
+RUN apt-get update && apt-get install -y qemu-system-x86
+
+# Copy Aurora OS ISO
+COPY aurora-os.iso /aurora-os.iso
+
+# Run Aurora OS
+CMD ["qemu-system-x86_64", "-cdrom", "/aurora-os.iso", "-m", "4G", "-nographic"]
+```
+
+Build and run:
+```bash
+docker build -t aurora-os .
+docker run -it --privileged aurora-os
+```
+
+---
+
+## 🔧 Boot Options
+
+Aurora OS provides multiple boot modes via GRUB:
+
+### GRUB Boot Menu:
+1. **Aurora OS (Normal Boot)** - Standard boot with full features
+2. **Aurora OS (Safe Mode)** - Boot with minimal drivers
+3. **Aurora OS (Debug Mode)** - Boot with verbose logging
+4. **Aurora OS (Recovery Mode)** - System recovery and repair
+5. **Memory Test** - Hardware memory diagnostics
+
+### Boot Parameters:
+```bash
+# Edit GRUB entry (press 'e' at boot menu)
+# Add parameters to kernel line:
+
+aurora.debug=1           # Enable debug mode
+aurora.safe=1            # Safe mode
+aurora.noacpi=1          # Disable ACPI
+aurora.nomodeset=1       # Disable kernel mode setting
+aurora.recovery=1        # Recovery mode
+```
+
+---
+
+## 🧪 Testing & Verification
+
+### Verify ISO Integrity:
+```bash
+# Check SHA256 checksum
+sha256sum aurora-os.iso
+# Should match: 9140badda5ff8ed09de31e0adcd60dc969c478ab9c7f8a899935f369e5278a8e
+
+# Check MD5 (if provided)
+md5sum aurora-os.iso
+```
+
+### Quick Test Checklist:
+- [ ] ISO boots successfully
+- [ ] GRUB menu appears
+- [ ] Kernel loads without errors
+- [ ] System reaches shell/desktop
+- [ ] Network connectivity works
+- [ ] Python runtime available
+- [ ] Aurora components load
+
+---
+
+## 🆘 Troubleshooting
+
+### ISO Won't Boot:
+- **Check BIOS settings**: Ensure virtualization is enabled (VT-x/AMD-V)
+- **Verify ISO**: Check SHA256 checksum matches
+- **Try different boot mode**: Legacy BIOS vs UEFI
+- **Increase RAM**: Minimum 4GB required
+
+### QEMU Errors:
+```bash
+# KVM permission denied
+sudo chmod 666 /dev/kvm
+# OR run without KVM:
+qemu-system-x86_64 -cdrom aurora-os.iso -m 4G  # (no -enable-kvm)
+
+# No display
+# Use -display gtk or -display sdl
+qemu-system-x86_64 -cdrom aurora-os.iso -m 4G -display gtk
+```
+
+### VirtualBox Issues:
+- Enable VT-x/AMD-V in BIOS
+- Install VirtualBox Extension Pack
+- Increase video memory to 128MB
+- Try different graphics controller (VMSVGA)
+
+### USB Boot Problems:
+- Disable Secure Boot in BIOS
+- Check boot order in BIOS
+- Try different USB port (USB 2.0 vs 3.0)
+- Re-create bootable USB with different tool
+
+---
+
+## 📖 Post-Installation
+
+### First Boot:
+1. System will boot to Aurora shell
+2. Default credentials (if required):
+   - Username: `aurora`
+   - Password: `aurora`
+
+### Update System:
+```bash
+sudo aurora-update
+```
+
+### Install Additional Software:
+```bash
+sudo aurora-pkg install <package-name>
+```
+
+### Configure AI Assistant:
+```bash
+aurora-ai-config
+```
 
 ---
 
