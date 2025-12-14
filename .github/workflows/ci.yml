@@ -111,7 +111,7 @@ jobs:
         make test || echo "Some tests failed - continuing for debugging"
 
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: aurora-os-${{ matrix.os }}-${{ matrix.arch }}
@@ -133,7 +133,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Download ISO artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: aurora-os-ubuntu-22.04-x86_64
         path: ./artifacts
