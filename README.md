@@ -29,7 +29,8 @@ aurora-theme catppuccin        # Change theme
 ```
 
 📖 **[ULTIMATE FEATURES GUIDE](ULTIMATE_FEATURES.md)** ⭐ **Read This First!**  
-🚀 **[Installation & Deployment](#-installation--deployment)**  
+� **[PUBLIC VERIFICATION GUIDE](PUBLIC_VERIFICATION.md)** 🎯 **Verify Everything!**  
+�🚀 **[Installation & Deployment](#-installation--deployment)**  
 📥 **[Download ISO](#-download-aurora-os)**
 
 ---
@@ -64,18 +65,20 @@ Boot → Understand YOU → Anticipate Needs → Complete Tasks → Manage Your 
 
 **Current Release: v0.3.0-alpha (Ultimate Complete Edition - 519 MB)**
 
-🔗 **[Download from GitHub Releases](https://github.com/Iteksmart/Aurora-OS/releases)**
+🔗 **[Download from GitHub Releases](https://github.com/Iteksmart/Aurora-OS/releases/tag/v0.3.0-alpha)**
 
 **Available Editions**:
-- **Ultimate Complete** (519 MB) - Full-featured with Python stdlib + all AI features
+- **Ultimate Complete** (519 MB) - Full-featured with Python stdlib + all AI features ⭐ **RECOMMENDED**
   - [aurora-os-ultimate-complete.iso](https://github.com/Iteksmart/Aurora-OS/releases/download/v0.3.0-alpha/aurora-os-ultimate-complete.iso)
   - SHA256: `f3190ed23314773a75f0425a336368246d8779ceb4e314e4b4d6274c39a74b8d`
 - **Base OS** (519 MB) - Full system without extra features
   - [aurora-os.iso](https://github.com/Iteksmart/Aurora-OS/releases/download/v0.3.0-alpha/aurora-os.iso)
 - **Ultimate Lite** (42 MB) - Framework only (for developers)
   - [aurora-os-ultimate.iso](https://github.com/Iteksmart/Aurora-OS/releases/download/v0.3.0-alpha/aurora-os-ultimate.iso)
+- **Kernel Binary** - Compiled Linux 6.1.115 LTS
+  - [vmlinuz](https://github.com/Iteksmart/Aurora-OS/releases/download/v0.3.0-alpha/vmlinuz) (5.7 MB)
 
-**Recommended**: Download **Ultimate Complete** for the full Aurora OS experience.
+🔍 **Verification:** All ISOs include SHA256 and MD5 checksums. See [PUBLIC_VERIFICATION.md](PUBLIC_VERIFICATION.md) for complete verification steps.
 
 ### What's Included (Ultimate Complete)
 - **Linux Kernel 6.1.115 LTS** (5.7 MB compiled)
