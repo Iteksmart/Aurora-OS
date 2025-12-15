@@ -7,7 +7,7 @@
 
 ## 🌟 **ULTIMATE EDITION** - Everything You Requested Is Here!
 
-**✅ Local AI (Llama/Ollama) - 100% Offline**  
+**✅ Local AI (Llama/Ollama) - Offline-capable after initial model download**  
 **✅ AI Taskbar Integration - Click anytime to chat**  
 **✅ Agentic AI - Completes tasks FOR you**  
 **✅ Auto Driver Detection - Like Windows**  
@@ -16,6 +16,8 @@
 **✅ AI Browser - Opera-style with built-in AI**  
 **✅ Aura Life OS - J.A.R.V.I.S. for your entire life**  
 **✅ All 20 GitHub Innovations - Fully integrated**
+
+**Note:** AI models (~4GB) are downloaded on first use. System works without AI features.
 
 ```bash
 # Test the Ultimate Complete Edition:
@@ -63,30 +65,31 @@ Boot → Understand YOU → Anticipate Needs → Complete Tasks → Manage Your 
 
 ## 📥 Download Aurora OS
 
-**Current Release: v0.3.0-alpha (Ultimate Complete Edition - 519 MB)**
+**Current Release: v0.3.0-alpha (December 13, 2025)**
 
 🔗 **[Download from GitHub Releases](https://github.com/Iteksmart/Aurora-OS/releases/tag/v0.3.0-alpha)**
 
 **Available Editions**:
-- **Ultimate Complete** (519 MB) - Full-featured with Python stdlib + all AI features ⭐ **RECOMMENDED**
+- **Complete Edition** (519 MB) - Full system with Python stdlib + AI features ⭐ **RECOMMENDED**
   - [aurora-os-ultimate-complete.iso](https://github.com/Iteksmart/Aurora-OS/releases/download/v0.3.0-alpha/aurora-os-ultimate-complete.iso)
   - SHA256: `f3190ed23314773a75f0425a336368246d8779ceb4e314e4b4d6274c39a74b8d`
-- **Base OS** (519 MB) - Full system without extra features
-  - [aurora-os.iso](https://github.com/Iteksmart/Aurora-OS/releases/download/v0.3.0-alpha/aurora-os.iso)
-- **Ultimate Lite** (42 MB) - Framework only (for developers)
+- **Framework Lite** (42 MB) - Minimal system with AI framework scripts only
   - [aurora-os-ultimate.iso](https://github.com/Iteksmart/Aurora-OS/releases/download/v0.3.0-alpha/aurora-os-ultimate.iso)
 - **Kernel Binary** - Compiled Linux 6.1.115 LTS
   - [vmlinuz](https://github.com/Iteksmart/Aurora-OS/releases/download/v0.3.0-alpha/vmlinuz) (5.7 MB)
 
+**Note:** Currently, Complete Edition includes all features. The AI capabilities (8 small Python scripts) are runtime-optional. AI models (~4GB) are **not included** - they can be downloaded on first boot or skipped to use the base system.
+
 🔍 **Verification:** All ISOs include SHA256 and MD5 checksums. See [PUBLIC_VERIFICATION.md](PUBLIC_VERIFICATION.md) for complete verification steps.
 
-### What's Included (Ultimate Complete)
+### What's Included (Complete Edition)
 - **Linux Kernel 6.1.115 LTS** (5.7 MB compiled)
 - **Python 3.12** + complete standard library (54 MB)
+- **Init System:** systemd (PID 1) with Aurora services as systemd units
 - **System Libraries**: glibc, libm, libdl, libpthread, libz
 - **BusyBox**: 150+ Unix utilities
 - **Aurora AI Control Plane** + MCP Nervous System
-- **Local AI** (Llama/Ollama integration) - Works 100% offline
+- **Local AI** (Llama/Ollama integration) - Offline-capable after model download (~4GB, optional)
 - **AI Taskbar** - Click-to-chat AI assistant
 - **Agentic AI** - Task completion automation
 - **Auto Driver Detection** - Windows-style plug-and-play
@@ -96,6 +99,8 @@ Boot → Understand YOU → Anticipate Needs → Complete Tasks → Manage Your 
 - **Aura Life OS** - J.A.R.V.I.S. life management system
 - **All 20 GitHub Innovations** - Fully integrated
 - **GRUB Bootloader** with multiple boot modes
+
+**Init Sequence:** GRUB → Linux 6.1.115 → systemd (PID 1) → Aurora services (as systemd units)
 
 📖 **Complete Feature List**: [ULTIMATE_COMPLETE_STATUS.md](ULTIMATE_COMPLETE_STATUS.md)
 
