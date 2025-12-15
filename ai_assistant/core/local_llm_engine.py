@@ -7,21 +7,32 @@ Supports Llama 3.2 and other open-source models
 import os
 import sys
 import json
-import torch
 import logging
 import asyncio
 import threading
 from typing import Dict, List, Optional, Any, Callable
 from dataclasses import dataclass
 from pathlib import Path
-import numpy as np
-from transformers import (
-    AutoTokenizer, 
-    AutoModelForCausalLM, 
-    pipeline,
-    TextIteratorStreamer,
-    GenerationConfig
-)
+
+# Optional dependencies - graceful fallback
+try:
+    import torch
+    import numpy as np
+    from transformers import (
+        AutoTokenizer, 
+        AutoModelForCausalLM, 
+        pipeline,
+        TextIteratorStreamer,
+        GenerationConfig
+    )
+    TORCH_AVAILABLE = True
+except ImportError as e:
+    logging.warning(f"PyTorch/Transformers not available: {e}")
+    logging.info("AI features will be disabled. Install with: pip install torch transformers")
+    TORCH_AVAILABLE = False
+    torch = None
+    np = None
+
 from concurrent.futures import ThreadPoolExecutor
 import gc
 
@@ -62,6 +73,7 @@ class LocalLLMEngine:
         self.executor = ThreadPoolExecutor(max_workers=4)
         self.is_loaded = False
         self.model_loaded_event = threading.Event()
+        self.torch_available = TORCH_AVAILABLE
         
         # Aurora OS specific system prompts
         self.system_prompts = {
@@ -73,6 +85,11 @@ class LocalLLMEngine:
         
         self.logger = logging.getLogger("Aurora.LocalLLM")
         self._setup_logging()
+        
+        # Check if dependencies are available
+        if not self.torch_available:
+            self.logger.warning("PyTorch not available - AI features disabled")
+            self.logger.info("To enable AI features, install: pip install torch transformers")
         
     def _setup_logging(self):
         """Setup logging for the LLM engine"""
@@ -89,6 +106,8 @@ class LocalLLMEngine:
         
     def _detect_device(self) -> str:
         """Detect optimal device for model inference"""
+        if not self.torch_available:
+            return "none"
         if torch.cuda.is_available():
             return "cuda"
         elif hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
@@ -98,6 +117,10 @@ class LocalLLMEngine:
     
     async def initialize_model(self):
         """Initialize the LLM model asynchronously"""
+        if not self.torch_available:
+            self.logger.warning("Cannot initialize model - PyTorch not available")
+            return False
+            
         try:
             self.logger.info(f"Loading model from {self.model_path} on {self.device}")
             
@@ -173,7 +196,7 @@ class LocalLLMEngine:
     def _detect_gpu(self) -> List[str]:
         """Detect available GPUs"""
         gpus = []
-        if torch.cuda.is_available():
+        if self.torch_available and torch.cuda.is_available():
             for i in range(torch.cuda.device_count()):
                 gpus.append(torch.cuda.get_device_name(i))
         return gpus
@@ -288,6 +311,15 @@ class LocalLLMEngine:
     
     async def _generate_regular(self, request: AIRequest, prompt: str, start_time: float) -> AIResponse:
         """Generate regular (non-streaming) response"""
+        if not self.torch_available:
+            return AIResponse(
+                text="AI features require PyTorch to be installed. Please install with: pip install torch transformers",
+                tokens_used=0,
+                confidence=0.0,
+                context_used=False,
+                response_time=asyncio.get_event_loop().time() - start_time
+            )
+            
         generation_config = GenerationConfig(
             max_new_tokens=request.max_tokens,
             temperature=request.temperature,
@@ -319,6 +351,15 @@ class LocalLLMEngine:
     
     async def _generate_streaming(self, request: AIRequest, prompt: str, start_time: float) -> AIResponse:
         """Generate streaming response"""
+        if not self.torch_available:
+            return AIResponse(
+                text="AI features require PyTorch to be installed. Please install with: pip install torch transformers",
+                tokens_used=0,
+                confidence=0.0,
+                context_used=False,
+                response_time=asyncio.get_event_loop().time() - start_time
+            )
+            
         streamer = TextIteratorStreamer(
             self.tokenizer, 
             skip_prompt=True, 
@@ -405,7 +446,7 @@ class LocalLLMEngine:
             del self.pipeline
         
         gc.collect()
-        if torch.cuda.is_available():
+        if self.torch_available and torch.cuda.is_available():
             torch.cuda.empty_cache()
         
         self.executor.shutdown(wait=True)

@@ -15,20 +15,35 @@ from datetime import datetime
 import threading
 import time
 
-# Import Aurora OS components
-from ai_assistant.core.local_llm_engine import initialize_ai_system, get_llm_engine
-from ai_assistant.ui.taskbar_assistant import get_taskbar_assistant
-from ai_assistant.voice.voice_interface import initialize_voice_system
-from ai_assistant.agents.task_agent import TaskAgent
+# Safe imports with graceful fallback
+def safe_import(module_path, component_name):
+    """Safely import a module, returning None if it fails"""
+    try:
+        parts = module_path.rsplit('.', 1)
+        module = __import__(parts[0], fromlist=[parts[1]] if len(parts) > 1 else [])
+        return getattr(module, component_name) if len(parts) > 1 else module
+    except (ImportError, AttributeError, ModuleNotFoundError) as e:
+        logging.warning(f"Optional component '{module_path}' not available: {e}")
+        return None
 
-from system.hardware.driver_manager import initialize_driver_system, get_driver_manager
-from system.settings.intent_settings import get_intent_engine
-from system.settings.settings_ui import show_settings
+# Try to import Aurora OS components (graceful fallback)
+initialize_ai_system = safe_import('ai_assistant.core.local_llm_engine', 'initialize_ai_system')
+get_llm_engine = safe_import('ai_assistant.core.local_llm_engine', 'get_llm_engine')
+get_taskbar_assistant = safe_import('ai_assistant.ui.taskbar_assistant', 'get_taskbar_assistant')
+initialize_voice_system = safe_import('ai_assistant.voice.voice_interface', 'initialize_voice_system')
+TaskAgent = safe_import('ai_assistant.agents.task_agent', 'TaskAgent')
 
-from system.advanced.nix_integration import initialize_nix_system, get_nix_integration
-from system.advanced.ebpf_integration import initialize_ebpf_system, get_ebpf_integration
+initialize_driver_system = safe_import('system.hardware.driver_manager', 'initialize_driver_system')
+get_driver_manager = safe_import('system.hardware.driver_manager', 'get_driver_manager')
+get_intent_engine = safe_import('system.settings.intent_settings', 'get_intent_engine')
+show_settings = safe_import('system.settings.settings_ui', 'show_settings')
 
-from applications.aurora_browser.browser import launch_browser
+initialize_nix_system = safe_import('system.advanced.nix_integration', 'initialize_nix_system')
+get_nix_integration = safe_import('system.advanced.nix_integration', 'get_nix_integration')
+initialize_ebpf_system = safe_import('system.advanced.ebpf_integration', 'initialize_ebpf_system')
+get_ebpf_integration = safe_import('system.advanced.ebpf_integration', 'get_ebpf_integration')
+
+launch_browser = safe_import('applications.aurora_browser.browser', 'launch_browser')
 
 class AuroraOS:
     """
