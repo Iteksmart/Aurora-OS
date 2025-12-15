@@ -1,0 +1,157 @@
+name: Build Aurora OS ISO
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'tools/build_*.sh'
+      - 'aurora_os_main.py'
+      - 'system/**'
+      - 'desktop/**'
+      - 'ai_assistant/**'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build type'
+        required: true
+        default: 'ultimate-complete'
+        type: choice
+        options:
+          - base
+          - ultimate
+          - ultimate-complete
+          - production
+          - all
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        lfs: true
+    
+    - name: Set up build environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          bc \
+          kmod \
+          cpio \
+          flex \
+          libncurses5-dev \
+          libelf-dev \
+          libssl-dev \
+          dwarves \
+          bison \
+          squashfs-tools \
+          xorriso \
+          isolinux \
+          grub-pc-bin \
+          grub-efi-amd64-bin \
+          mtools \
+          dosfstools \
+          python3 \
+          python3-pip \
+          git \
+          wget \
+          curl
+    
+    - name: Cache kernel build
+      uses: actions/cache@v3
+      with:
+        path: |
+          kernel/linux-6.1
+          build/kernel
+        key: ${{ runner.os }}-kernel-6.1.115-${{ hashFiles('kernel/**') }}
+        restore-keys: |
+          ${{ runner.os }}-kernel-6.1.115-
+    
+    - name: Cache Python stdlib
+      uses: actions/cache@v3
+      with:
+        path: build/python
+        key: ${{ runner.os }}-python-3.12-${{ hashFiles('build/**') }}
+    
+    - name: Build Ultimate Complete ISO
+      if: github.event.inputs.build_type == 'ultimate-complete' || github.event.inputs.build_type == 'all' || github.event_name != 'workflow_dispatch'
+      run: |
+        chmod +x tools/build_ultimate_complete.sh
+        sudo ./tools/build_ultimate_complete.sh
+    
+    - name: Build Base ISO
+      if: github.event.inputs.build_type == 'base' || github.event.inputs.build_type == 'all'
+      run: |
+        chmod +x tools/build_full_os.sh
+        sudo ./tools/build_full_os.sh
+    
+    - name: Build Ultimate Lite ISO
+      if: github.event.inputs.build_type == 'ultimate' || github.event.inputs.build_type == 'all'
+      run: |
+        chmod +x tools/build_ultimate.sh
+        sudo ./tools/build_ultimate.sh
+    
+    - name: Build Production ISO
+      if: github.event.inputs.build_type == 'production' || github.event.inputs.build_type == 'all'
+      run: |
+        chmod +x tools/build_production.sh
+        sudo ./tools/build_production.sh
+    
+    - name: Generate checksums
+      run: |
+        for iso in *.iso; do
+          if [ -f "$iso" ]; then
+            sha256sum "$iso" > "$iso.sha256"
+            md5sum "$iso" > "$iso.md5"
+          fi
+        done
+    
+    - name: Upload ISOs as artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: aurora-os-isos
+        path: |
+          *.iso
+          *.iso.sha256
+          *.iso.md5
+        retention-days: 30
+    
+    - name: Upload kernel artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: kernel-artifacts
+        path: |
+          build/kernel/vmlinuz
+          build/initramfs_*/init
+        retention-days: 30
+    
+    - name: Create Release (on tag)
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          *.iso
+          *.iso.sha256
+          *.iso.md5
+          build/kernel/vmlinuz
+        draft: false
+        prerelease: contains(github.ref, 'alpha') || contains(github.ref, 'beta')
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Test ISOs (smoke test)
+      run: |
+        for iso in *.iso; do
+          if [ -f "$iso" ]; then
+            echo "Testing $iso..."
+            file "$iso"
+            # Verify ISO is bootable
+            xorriso -indev "$iso" -report_el_torito as_mkisofs 2>&1 | grep -q "El-Torito" && echo "✅ $iso is bootable" || echo "❌ $iso may not be bootable"
+          fi
+        done

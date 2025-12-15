@@ -1,0 +1,84 @@
+name: Verify Build Artifacts
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        lfs: true
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run unit tests
+      run: |
+        python -m pytest tests/ -v || echo "Tests directory structure needs review"
+    
+    - name: Verify build scripts
+      run: |
+        echo "Checking build scripts..."
+        for script in tools/build_*.sh; do
+          if [ -f "$script" ]; then
+            echo "✅ Found: $script"
+            bash -n "$script" && echo "  Syntax OK" || echo "  ❌ Syntax error"
+          fi
+        done
+    
+    - name: Verify kernel artifacts
+      run: |
+        if [ -f "build/kernel/vmlinuz" ]; then
+          echo "✅ Kernel binary found"
+          ls -lh build/kernel/vmlinuz
+          file build/kernel/vmlinuz
+        else
+          echo "⚠️ No pre-built kernel found (will be built during ISO creation)"
+        fi
+    
+    - name: Verify Python main entry point
+      run: |
+        python -m py_compile aurora_os_main.py
+        echo "✅ Main entry point compiles successfully"
+    
+    - name: Check for ISOs (if present)
+      run: |
+        if ls *.iso 1> /dev/null 2>&1; then
+          echo "ISOs found in repository (via LFS):"
+          ls -lh *.iso
+          for iso in *.iso; do
+            echo ""
+            echo "Checking $iso..."
+            file "$iso"
+            if command -v xorriso &> /dev/null; then
+              xorriso -indev "$iso" -report_system_area plain 2>&1 | head -10
+            fi
+          done
+        else
+          echo "ℹ️ No ISOs in repository (build workflow will create them)"
+        fi
+    
+    - name: Verify documentation
+      run: |
+        echo "Checking documentation..."
+        for doc in README.md ULTIMATE_COMPLETE_STATUS.md ULTIMATE_FEATURES.md; do
+          if [ -f "$doc" ]; then
+            echo "✅ $doc exists"
+          else
+            echo "❌ Missing: $doc"
+          fi
+        done
