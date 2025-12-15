@@ -3,7 +3,7 @@
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/Iteksmart/Aurora-OS)
 [![Kernel](https://img.shields.io/badge/kernel-6.1.115%20LTS-blue)](https://kernel.org)
 [![License](https://img.shields.io/badge/license-GPL%20v2-blue)](LICENSE)
-[![ISO](https://img.shields.io/badge/ISO-42MB%20Ultimate-success)](https://github.com/Iteksmart/Aurora-OS/releases)
+[![ISO](https://img.shields.io/badge/ISO-519MB%20Ultimate%20Complete-success)](https://github.com/Iteksmart/Aurora-OS/releases)
 
 ## 🌟 **ULTIMATE EDITION** - Everything You Requested Is Here!
 
@@ -18,8 +18,8 @@
 **✅ All 20 GitHub Innovations - Fully integrated**
 
 ```bash
-# Test the Ultimate Edition:
-qemu-system-x86_64 -cdrom aurora-os-ultimate.iso -m 4G -smp 2
+# Test the Ultimate Complete Edition:
+qemu-system-x86_64 -cdrom aurora-os-ultimate-complete.iso -m 4G -smp 2
 
 # Commands inside Aurora OS:
 aurora-ai "fix my wifi"        # Local AI assistant
@@ -62,28 +62,39 @@ Boot → Understand YOU → Anticipate Needs → Complete Tasks → Manage Your 
 
 ## 📥 Download Aurora OS
 
-**Current Release: v0.1.0 (519 MB)**
+**Current Release: v0.3.0-alpha (Ultimate Complete Edition - 519 MB)**
 
-🔗 **[Download from GitHub Releases](https://github.com/Iteksmart/Aurora-OS/releases/tag/v0.1.0)**
+🔗 **[Download from GitHub Releases](https://github.com/Iteksmart/Aurora-OS/releases)**
 
-**Direct Links**:
-- [aurora-os.iso](https://github.com/Iteksmart/Aurora-OS/releases/download/v0.1.0/aurora-os.iso) (519 MB)
-- [SHA256 Checksum](https://github.com/Iteksmart/Aurora-OS/releases/download/v0.1.0/aurora-os.iso.sha256)
-- [MD5 Checksum](https://github.com/Iteksmart/Aurora-OS/releases/download/v0.1.0/aurora-os.iso.md5)
+**Available Editions**:
+- **Ultimate Complete** (519 MB) - Full-featured with Python stdlib + all AI features
+  - [aurora-os-ultimate-complete.iso](https://github.com/Iteksmart/Aurora-OS/releases/download/v0.3.0-alpha/aurora-os-ultimate-complete.iso)
+  - SHA256: `f3190ed23314773a75f0425a336368246d8779ceb4e314e4b4d6274c39a74b8d`
+- **Base OS** (519 MB) - Full system without extra features
+  - [aurora-os.iso](https://github.com/Iteksmart/Aurora-OS/releases/download/v0.3.0-alpha/aurora-os.iso)
+- **Ultimate Lite** (42 MB) - Framework only (for developers)
+  - [aurora-os-ultimate.iso](https://github.com/Iteksmart/Aurora-OS/releases/download/v0.3.0-alpha/aurora-os-ultimate.iso)
 
-**Checksums**: 
-- **SHA256**: `9140badda5ff8ed09de31e0adcd60dc969c478ab9c7f8a899935f369e5278a8e`
-- **MD5**: `5e01b38a149432676fef8beb201ab4dd`
+**Recommended**: Download **Ultimate Complete** for the full Aurora OS experience.
 
-### What's Included
+### What's Included (Ultimate Complete)
 - **Linux Kernel 6.1.115 LTS** (5.7 MB compiled)
-- **Python 3.12** + complete standard library (~300 MB)
+- **Python 3.12** + complete standard library (54 MB)
 - **System Libraries**: glibc, libm, libdl, libpthread, libz
 - **BusyBox**: 150+ Unix utilities
 - **Aurora AI Control Plane** + MCP Nervous System
-- **AI Assistant** + Voice Interface
-- **System Services** + Security Framework
+- **Local AI** (Llama/Ollama integration) - Works 100% offline
+- **AI Taskbar** - Click-to-chat AI assistant
+- **Agentic AI** - Task completion automation
+- **Auto Driver Detection** - Windows-style plug-and-play
+- **System/Admin/User Settings** - Complete configuration UI
+- **Theme Manager** - 7+ professional themes
+- **AI Browser** - Opera-style with built-in AI
+- **Aura Life OS** - J.A.R.V.I.S. life management system
+- **All 20 GitHub Innovations** - Fully integrated
 - **GRUB Bootloader** with multiple boot modes
+
+📖 **Complete Feature List**: [ULTIMATE_COMPLETE_STATUS.md](ULTIMATE_COMPLETE_STATUS.md)
 
 ---
 
@@ -108,14 +119,23 @@ Aurora OS can be deployed in multiple ways depending on your needs. Choose the o
 
 3. **Configure VM Settings**:
    ```
+   - Name: Aurora OS Ultimate Complete
+   - Type: Linux
+   - Version: Other Linux (64-bit)
+   - Memory: 4096 MB (4 GB minimum, 8 GB recommended)
+   - Hard disk: Create virtual hard disk (20 GB+)
+   ```
+
+4. **Attach ISO**:
+   ```
    - System → Processor: 2 CPUs (4 recommended)
    - System → Acceleration: Enable VT-x/AMD-V
-   - Storage → Controller IDE: Add aurora-os.iso as CD/DVD
+   - Storage → Controller IDE: Add aurora-os-ultimate-complete.iso as CD/DVD
    - Display → Video Memory: 128 MB
    - Network → Adapter 1: NAT or Bridged
    ```
 
-4. **Boot Aurora OS**:
+5. **Boot Aurora OS**:
    - Start the VM
    - Aurora OS will boot from the ISO
    - Follow on-screen instructions
@@ -132,7 +152,7 @@ VBoxManage modifyvm "Aurora-OS" --boot1 dvd --boot2 disk
 
 # Add storage
 VBoxManage storagectl "Aurora-OS" --name "IDE" --add ide
-VBoxManage storageattach "Aurora-OS" --storagectl "IDE" --port 0 --device 0 --type dvddrive --medium aurora-os.iso
+VBoxManage storageattach "Aurora-OS" --storagectl "IDE" --port 0 --device 0 --type dvddrive --medium aurora-os-ultimate-complete.iso
 
 # Start VM
 VBoxManage startvm "Aurora-OS"
