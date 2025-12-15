@@ -10,10 +10,11 @@
 | Property | Value |
 |----------|-------|
 | **Filename** | aurora-os-complete-with-pytorch.iso |
-| **Size** | **1.1GB (1,025 MB)** |
-| **SHA256** | `b8d9324a18dd9fd38ae74a0199ef5298249eca04c372accde18e013e7869c085` |
-| **MD5** | `996ef22764c78c9f5dbf3e5b7396f840` |
-| **Bootable** | ✅ Yes (GRUB hybrid BIOS/UEFI) |
+| **Size** | **1.1GB (1,039 MB)** |
+| **SHA256** | `2d9ca236d7cdc51db51550dea7babc00c87516027cf64cc6d284c464694fa760` |
+| **MD5** | `(regenerated - see .md5 file)` |
+| **Bootable** | ✅ Yes (GRUB 2.12 with menu + Linux kernel 6.8.0) |
+| **Kernel** | Linux 6.8.0-90-generic (15 MB) |
 | **Initrd Size** | 1,013 MB (compressed from 3.3GB) |
 
 ---
