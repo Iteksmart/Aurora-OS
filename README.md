@@ -1,3 +1,7 @@
+> [!WARNING]
+> **This repository has moved to [github.com/iTechSmartINC/Aurora-OS](https://github.com/iTechSmartINC/Aurora-OS)** as part of the iTechSmart Inc rebrand.
+> Please update your links and git remotes. This copy is kept as a redirect and is no longer updated.
+
 # Aurora OS Ultimate: The AI-Native Operating System + Life OS
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/Iteksmart/Aurora-OS)
