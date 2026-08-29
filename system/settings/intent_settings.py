@@ -738,7 +738,7 @@ class IntentEngine:
         try:
             import subprocess
             action = 'up' if target else 'down'
-            result = subprocess.run(['nmcli', 'connection', action', 'aurora-vpn'], 
+            result = subprocess.run(['nmcli', 'connection', action, 'aurora-vpn'], 
                                   capture_output=True, text=True)
             return result.returncode == 0
         except:
